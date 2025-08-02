@@ -1,13 +1,11 @@
-
-
-import { Inter } from "next/font/google";
+// app/layout.tsx
 import type { Metadata } from "next";
-
+import { Inter } from "next/font/google";
 import './globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'aos/dist/aos.css';  // <-- добавили
-import { useEffect } from "react";
-import AOS from "aos";
+import 'aos/dist/aos.css';
+
+import AOSWrapper from './AOSWrapper';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,16 +23,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  useEffect(() => {
-    AOS.init({ duration: 1000 });
-  }, []);
-
+}) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} antialiased`}>{children}</body>
-    </html>
+    <>
+      <AOSWrapper />
+      <html lang="ru">
+        <body className={`${inter.variable} antialiased`}>{children}</body>
+      </html>
+    </>
   );
 }
