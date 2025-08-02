@@ -1,0 +1,57 @@
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.contact-btn {
+  width: 140px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  text-align: center;
+  padding: 8px 0;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.contact-btn:hover {
+  background-color: #d7ecf6 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Цвета кнопок */
+.contact-btn.telegram {
+  color: #0088cc;
+}
+
+.contact-btn.whatsapp {
+  color: #25d366;
+}
+
+.contact-btn.vk {
+  color: #4a76a8;
+}
+
+.contact-btn.linkedin {
+  color: #0A66C2;
+}
