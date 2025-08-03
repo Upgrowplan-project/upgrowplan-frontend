@@ -37,55 +37,60 @@ export default function Home() {
       </header>
 
       <main>
-        {/* Hero Section */}
-        <section
-          className="position-relative text-center d-flex flex-column justify-content-center align-items-center"
-          style={{ minHeight: '60vh', color: '#fff', overflow: 'hidden' }}
-          data-aos="fade-up"
-        >
-          {/* Видео только на десктопе */}
-          <div className="d-none d-md-block">
-            <video
-              className="position-absolute top-50 start-50 translate-middle"
-              src="/video/hero.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              style={{ minWidth: '100%', minHeight: '100%', objectFit: 'cover', zIndex: -1 }}
-            />
-            <div
-              className="position-absolute top-0 start-0 w-100 h-100"
-              style={{ backgroundColor: 'rgba(30, 96, 120, 0.55)', zIndex: 0 }}
-            />
-          </div>
+{/* Hero Section с видео / картинкой */}
+<section
+  className="position-relative text-center d-flex flex-column justify-content-center align-items-center"
+  style={{ minHeight: '60vh', color: '#fff', overflow: 'hidden' }}
+  data-aos="fade-up"
+>
+  {/* Видео только для desktop */}
+  <video
+    className="position-absolute top-50 start-50 translate-middle d-none d-md-block"
+    src="/video/hero.mp4"
+    autoPlay
+    muted
+    loop
+    playsInline
+    style={{
+      minWidth: '100%',
+      minHeight: '100%',
+      objectFit: 'cover',
+      zIndex: -1
+    }}
+  />
 
-          {/* Статичное изображение на мобилках */}
-          <div className="d-block d-md-none position-absolute top-0 start-0 w-100 h-100">
-            <Image
-              src="/images/hero-mobile.jpg"
-              alt="Hero"
-              fill
-              style={{ objectFit: 'cover', zIndex: -1 }}
-            />
-          </div>
+  {/* Фоновая картинка только для мобильных */}
+  <Image
+    src="/images/hero-mobile.jpg"
+    alt="Hero mobile"
+    fill
+    className="d-block d-md-none"
+    style={{ objectFit: 'cover', zIndex: -1 }}
+  />
 
-          {/* Контент */}
-          <div className="container position-relative" style={{ zIndex: 1 }}>
-            <h1 className="fw-bold mb-3 px-3">
-              От идеи до готового бизнес-плана и финансовой модели с AI и экспертной поддержкой
-            </h1>
-            <p className="lead mb-4 px-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
-              Вы занимаетесь тем, что зажигает вас — печёте хлеб, шьёте платье, преподаёте английский.
-              Мы берём на себя расчёты и финансы. Non‑Excel люди не тратят время на скучные таблицы —
-              мы, профессиональные экономисты и программисты, делаем это за вас.
-            </p>
-            <div className="d-flex gap-3 flex-wrap justify-content-center" data-aos="zoom-in">
-              <a href="/brif" className="btn btn-primary btn-lg">Начать расчет →</a>
-              <a href="#" className="btn btn-outline-light btn-lg">Посмотреть пример бизнес‑плана</a>
-            </div>
-          </div>
-        </section>
+  {/* Overlay только для desktop (чтобы не затемнять мобильную картинку) */}
+  <div
+    className="position-absolute top-0 start-0 w-100 h-100 d-none d-md-block"
+    style={{ backgroundColor: 'rgba(30, 96, 120, 0.55)', zIndex: 0 }}
+  />
+
+  {/* Контент */}
+  <div className="container position-relative" style={{ zIndex: 1 }}>
+    <h1 className="fw-bold mb-3 px-3">
+      От идеи до готового бизнес-плана и финансовой модели с AI и экспертной поддержкой
+    </h1>
+    <p className="lead mb-4 px-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      Вы занимаетесь тем, что зажигает вас — печёте хлеб, шьёте платье, преподаёте английский.
+      Мы берём на себя расчёты и финансы. Non‑Excel люди не тратят время на скучные таблицы —
+      мы, профессиональные экономисты и программисты, делаем это за вас.
+    </p>
+    <div className="d-flex gap-3 flex-wrap justify-content-center" data-aos="zoom-in">
+      <a href="/brif" className="btn btn-primary btn-lg">Начать расчет →</a>
+      <a href="#" className="btn btn-outline-light btn-lg">Посмотреть пример бизнес‑плана</a>
+    </div>
+  </div>
+</section>
+
 
         {/* Что мы делаем */}
         <section className="container py-5" data-aos="fade-up">
