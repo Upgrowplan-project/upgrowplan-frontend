@@ -37,63 +37,71 @@ export default function Home() {
       </header>
 
       <main>
-        {/* Hero Section с видео */}
-<section className="position-relative text-center d-flex flex-column justify-content-center align-items-center"
-         style={{ minHeight: '60vh', color: '#fff', overflow: 'hidden' }}
-         data-aos="fade-up">
-  {/* Фоновое видео */}
-  <video
-    className="position-absolute top-50 start-50 translate-middle"
-    src="/video/hero.mp4"
-    autoPlay
-    muted
-    loop
-    playsInline
-    style={{ minWidth: '100%', minHeight: '100%', objectFit: 'cover', zIndex: -1 }}
-  />
-  
-  {/* Overlay */}
-  <div className="position-absolute top-0 start-0 w-100 h-100" 
-       style={{ backgroundColor: 'rgba(30, 96, 120, 0.55)', zIndex: 0 }}>
-  </div>
+        {/* Hero Section */}
+        <section
+          className="position-relative text-center d-flex flex-column justify-content-center align-items-center"
+          style={{ minHeight: '60vh', color: '#fff', overflow: 'hidden' }}
+          data-aos="fade-up"
+        >
+          {/* Видео только на десктопе */}
+          <div className="d-none d-md-block">
+            <video
+              className="position-absolute top-50 start-50 translate-middle"
+              src="/video/hero.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              style={{ minWidth: '100%', minHeight: '100%', objectFit: 'cover', zIndex: -1 }}
+            />
+            <div
+              className="position-absolute top-0 start-0 w-100 h-100"
+              style={{ backgroundColor: 'rgba(30, 96, 120, 0.55)', zIndex: 0 }}
+            />
+          </div>
 
-  {/* Контент */}
-  <div className="container position-relative" style={{ zIndex: 1 }}>
-    <h1 className="fw-bold mb-3 px-3">
-      От идеи до готового бизнес-плана и финансовой модели с AI и экспертной поддержкой
-    </h1>
-    <p className="lead mb-4 px-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      Вы занимаетесь тем, что зажигает вас — печёте хлеб, шьёте платье, преподаёте английский.
-      Мы берём на себя расчёты и финансы. Non‑Excel люди не тратят время на скучные таблицы —
-      мы, профессиональные экономисты и программисты, делаем это за вас.
-    </p>
-    <div className="d-flex gap-3 flex-wrap justify-content-center" data-aos="zoom-in">
-      <a href="/brif" className="btn btn-primary btn-lg">Начать расчет →</a>
-      <a href="#" className="btn btn-outline-light btn-lg">Посмотреть пример бизнес‑плана</a>
-    </div>
-  </div>
-</section>
+          {/* Статичное изображение на мобилках */}
+          <div className="d-block d-md-none position-absolute top-0 start-0 w-100 h-100">
+            <Image
+              src="/images/hero-mobile.jpg"
+              alt="Hero"
+              fill
+              style={{ objectFit: 'cover', zIndex: -1 }}
+            />
+          </div>
 
+          {/* Контент */}
+          <div className="container position-relative" style={{ zIndex: 1 }}>
+            <h1 className="fw-bold mb-3 px-3">
+              От идеи до готового бизнес-плана и финансовой модели с AI и экспертной поддержкой
+            </h1>
+            <p className="lead mb-4 px-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
+              Вы занимаетесь тем, что зажигает вас — печёте хлеб, шьёте платье, преподаёте английский.
+              Мы берём на себя расчёты и финансы. Non‑Excel люди не тратят время на скучные таблицы —
+              мы, профессиональные экономисты и программисты, делаем это за вас.
+            </p>
+            <div className="d-flex gap-3 flex-wrap justify-content-center" data-aos="zoom-in">
+              <a href="/brif" className="btn btn-primary btn-lg">Начать расчет →</a>
+              <a href="#" className="btn btn-outline-light btn-lg">Посмотреть пример бизнес‑плана</a>
+            </div>
+          </div>
+        </section>
 
         {/* Что мы делаем */}
         <section className="container py-5" data-aos="fade-up">
           <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Что мы делаем</h2>
           <div className="row g-4">
-            <div className="col-md-4 text-center" data-aos="zoom-in" data-aos-delay="100">
-              <Image src="/images/tool1.jpg" alt="Бизнес-планы" width={100} height={100} className="mb-3" />
-              <h5>Бизнес‑планы под ключ</h5>
-              <p className="text-muted">Документы, которые убедят инвесторов и банки.</p>
-            </div>
-            <div className="col-md-4 text-center" data-aos="zoom-in" data-aos-delay="200">
-              <Image src="/images/tool2.jpg" alt="Финансовые расчеты" width={100} height={100} className="mb-3" />
-              <h5>Финансовые расчёты</h5>
-              <p className="text-muted">Точные и полные расчёты вашего проекта.</p>
-            </div>
-            <div className="col-md-4 text-center" data-aos="zoom-in" data-aos-delay="300">
-              <Image src="/images/tool3.jpg" alt="AI-инструменты" width={100} height={100} className="mb-3" />
-              <h5>AI‑инструменты</h5>
-              <p className="text-muted">Быстрый результат с помощью искусственного интеллекта.</p>
-            </div>
+            {[
+              { src: '/images/tool1.jpg', title: 'Бизнес‑планы под ключ', desc: 'Документы, которые убедят инвесторов и банки.' },
+              { src: '/images/tool2.jpg', title: 'Финансовые расчёты', desc: 'Точные и полные расчёты вашего проекта.' },
+              { src: '/images/tool3.jpg', title: 'AI‑инструменты', desc: 'Быстрый результат с помощью искусственного интеллекта.' },
+            ].map((tool, i) => (
+              <div key={i} className="col-12 col-md-4 text-center" data-aos="zoom-in" data-aos-delay={i * 100}>
+                <Image src={tool.src} alt={tool.title} width={600} height={400} className="img-fluid rounded shadow mb-3" />
+                <h5>{tool.title}</h5>
+                <p className="text-muted">{tool.desc}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -134,15 +142,15 @@ export default function Home() {
           </div>
         </section>
 
-        {/* AI-инструменты (заглушка) */}
+        {/* AI-инструменты */}
         <section className="py-5" style={{ backgroundColor: '#f8f9fa' }} data-aos="fade-up">
           <div className="container">
             <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Наши AI‑инструменты</h2>
             <div className="row g-4">
-              {['Инструмент 1', 'Инструмент 2', 'Инструмент 3'].map((tool, i) => (
-                <div key={i} className="col-md-4 text-center" data-aos="zoom-in" data-aos-delay={i * 100}>
-                  <div className="bg-secondary mb-3" style={{ height: '100px' }}></div>
-                  <h5>{tool}</h5>
+              {[1, 2, 3].map((num) => (
+                <div key={num} className="col-12 col-md-4 text-center" data-aos="zoom-in" data-aos-delay={num * 100}>
+                  <Image src={`/images/tool${num}.jpg`} alt={`AI-инструмент ${num}`} width={600} height={400} className="img-fluid rounded shadow mb-3" />
+                  <h5>Инструмент {num}</h5>
                   <p className="text-muted">Краткое описание инструмента.</p>
                 </div>
               ))}
