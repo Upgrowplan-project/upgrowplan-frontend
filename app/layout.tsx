@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import './globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'aos/dist/aos.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 import AOSWrapper from './AOSWrapper';
 

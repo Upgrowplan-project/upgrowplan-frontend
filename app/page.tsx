@@ -97,9 +97,9 @@ export default function Home() {
           <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Что мы делаем</h2>
           <div className="row g-4">
             {[
-              { src: '/images/tool1.jpg', title: 'Бизнес‑планы под ключ', desc: 'Документы, которые убедят инвесторов и банки.' },
+              { src: '/images/tool1.jpg', title: 'Бизнес‑планы от эксперта', desc: 'Документы, которые убедят инвесторов и банки. Модели UNIDO/EBRD, Lean Canvas' },
               { src: '/images/tool2.jpg', title: 'Финансовые расчёты', desc: 'Точные и полные расчёты вашего проекта.' },
-              { src: '/images/tool3.jpg', title: 'AI‑инструменты', desc: 'Быстрый результат с помощью искусственного интеллекта.' },
+              { src: '/images/tool3.jpg', title: 'AI‑инструменты', desc: 'Быстрый результат с помощью натренированного искуственного интеллекта.' },
             ].map((tool, i) => (
               <div key={i} className="col-12 col-md-4 text-center" data-aos="zoom-in" data-aos-delay={i * 100}>
                 <Image src={tool.src} alt={tool.title} width={600} height={400} className="img-fluid rounded shadow mb-3" />
@@ -116,16 +116,16 @@ export default function Home() {
             <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Почему нам доверяют</h2>
             <div className="row text-center g-4">
               <div className="col-md-4" data-aos="fade-right">
-                <h4 className="fw-bold">10+ лет опыта</h4>
-                <p className="text-muted">Проверенные методики и реальный опыт.</p>
+                <h4 className="fw-bold">14+ лет опыта</h4>
+                <p className="text-muted">Проверенные методики и реальные результаты.</p>
               </div>
               <div className="col-md-4" data-aos="fade-up">
-                <h4 className="fw-bold">300+ проектов</h4>
-                <p className="text-muted">Реальные результаты и успешные кейсы.</p>
+                <h4 className="fw-bold">260+ проектов</h4>
+                <p className="text-muted">Опыт и успешные кейсы.</p>
               </div>
               <div className="col-md-4" data-aos="fade-left">
                 <h4 className="fw-bold">AI‑решения</h4>
-                <p className="text-muted">Сложное делаем простым и быстрым.</p>
+                <p className="text-muted">Сложное делаем простым и быстро.</p>
               </div>
             </div>
           </div>
@@ -138,30 +138,74 @@ export default function Home() {
               <Image src="/images/why-important.jpg" alt="Предприниматели" width={600} height={400} className="img-fluid rounded shadow" />
             </div>
             <div className="col-md-6">
-              <h2 className="mb-3" style={{ color: '#1e6078' }}>Почему это важно</h2>
+              <h2 className="mb-3" style={{ color: '#1e6078' }}>Почему это важно?</h2>
               <p>
-                Вы занимаетесь любимым делом, а мы берём на себя всё, что связано с финансами, расчетами и
+                Вы занимаетесь любимым делом, а мы берём на себя финансами, расчетами и
                 бизнес-планированием. Не нужно разбираться в сложных таблицах — мы сделаем всё профессионально и быстро.
               </p>
             </div>
           </div>
         </section>
 
-        {/* AI-инструменты */}
-        <section className="py-5" style={{ backgroundColor: '#f8f9fa' }} data-aos="fade-up">
-          <div className="container">
-            <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Наши AI‑инструменты</h2>
-            <div className="row g-4">
-              {[1, 2, 3].map((num) => (
-                <div key={num} className="col-12 col-md-4 text-center" data-aos="zoom-in" data-aos-delay={num * 100}>
-                  <Image src={`/images/tool${num}.jpg`} alt={`AI-инструмент ${num}`} width={600} height={400} className="img-fluid rounded shadow mb-3" />
-                  <h5>Инструмент {num}</h5>
-                  <p className="text-muted">Краткое описание инструмента.</p>
-                </div>
-              ))}
-            </div>
+{/* AI-инструменты */}
+<section className="py-5" style={{ backgroundColor: '#f8f9fa' }} data-aos="fade-up">
+  <div className="container">
+    <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Наши AI‑инструменты</h2>
+    <div className="row g-4">
+
+      {[
+        {
+          img: "/images/tool5.png",
+          title: "FinPilot free",
+          desc: "Автоматические финансовые модели. Получите бесплатный и мгновенный расчет прибыли / ипотеки / акции. Вариативность сценариев / стран"
+        },
+        {
+          img: "/images/tool6.png",
+          title: "PlanMaster AI",
+          desc: "AI-генератор бизнес планов. Используются LLM-модели, натренированные по экономическому стеку + агенты, обеспечивающие модель актуальными данными о состоянии рынка и налогообложении. Технологии RAG, fine-tuning"
+        },
+        {
+          img: "/images/tool7.png",
+          title: "MarketSense AI",
+          desc: "AI-консультант в Web / Telegram. Формирование стратегии, анализ рынка, гибридная финансовая модель"
+        }
+      ].map((tool, i) => (
+        <div
+          key={i}
+          className="col-12 col-md-4 text-center d-flex flex-column align-items-center"
+          data-aos="zoom-in"
+          data-aos-delay={i * 100}
+        >
+          {/* Картинка фиксированной высоты */}
+          <div
+            className="d-flex align-items-center justify-content-center mb-3"
+            style={{ height: "250px" }}
+          >
+            <Image
+              src={tool.img}
+              alt={tool.title}
+              width={300}
+              height={200}
+              className="img-fluid rounded shadow"
+              style={{ objectFit: "contain", maxHeight: "100%" }}
+            />
           </div>
-        </section>
+
+          <h5>{tool.title}</h5>
+          <p className="text-muted">{tool.desc}</p>
+
+          {/* Иконка "Скоро релиз" с Bootstrap Icon */}
+          <div className="mt-auto d-flex flex-column align-items-center text-secondary">
+            <i className="bi bi-hourglass-split" style={{ fontSize: "1.5rem" }}></i>
+            <span className="small">Скоро релиз</span>
+          </div>
+        </div>
+      ))}
+
+    </div>
+  </div>
+</section>
+
 
         {/* Призыв к действию */}
         <section className="text-center py-5" data-aos="fade-up">
