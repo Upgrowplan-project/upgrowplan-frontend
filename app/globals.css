@@ -55,3 +55,32 @@ body {
 .contact-btn.linkedin {
   color: #0A66C2;
 }
+
+.release-soon {
+  font-size: 0.9rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.release-icon {
+  font-size: 1.2rem;
+  color: #1e6078;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

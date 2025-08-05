@@ -152,17 +152,16 @@ export default function Home() {
   <div className="container">
     <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Наши AI‑инструменты</h2>
     <div className="row g-4">
-
       {[
         {
           img: "/images/tool5.png",
-          title: "FinPilot free",
+          title: "FinPilot",
           desc: "Автоматические финансовые модели. Получите бесплатный и мгновенный расчет прибыли / ипотеки / акции. Вариативность сценариев / стран"
         },
         {
           img: "/images/tool6.png",
           title: "PlanMaster AI",
-          desc: "AI-генератор бизнес планов. Используются LLM-модели, натренированные по экономическому стеку + агенты, обеспечивающие модель актуальными данными о состоянии рынка и налогообложении. Технологии RAG, fine-tuning"
+          desc: "AI-генератор бизнес планов. Используются LLM-модели, натренированные по экономическому стеку + агенты, обеспечивающие модель сегодняшней проверенными данными. Технологии RAG, fine-tuning"
         },
         {
           img: "/images/tool7.png",
@@ -170,41 +169,36 @@ export default function Home() {
           desc: "AI-консультант в Web / Telegram. Формирование стратегии, анализ рынка, гибридная финансовая модель"
         }
       ].map((tool, i) => (
-        <div
-          key={i}
-          className="col-12 col-md-4 text-center d-flex flex-column align-items-center"
-          data-aos="zoom-in"
-          data-aos-delay={i * 100}
-        >
-          {/* Картинка фиксированной высоты */}
-          <div
-            className="d-flex align-items-center justify-content-center mb-3"
-            style={{ height: "250px" }}
-          >
-            <Image
-              src={tool.img}
-              alt={tool.title}
-              width={300}
-              height={200}
-              className="img-fluid rounded shadow"
-              style={{ objectFit: "contain", maxHeight: "100%" }}
+        <div key={i} className="col-12 col-md-4 text-center d-flex flex-column align-items-center" data-aos="zoom-in" data-aos-delay={i * 100}>
+          
+          {/* Контейнер изображения с фиксированными размерами */}
+          <div className="tool-image-wrapper mb-3">
+            <Image 
+              src={tool.img} 
+              alt={tool.title} 
+              width={300} 
+              height={200} 
+              className="img-fluid rounded shadow tool-image" 
             />
           </div>
 
-          <h5>{tool.title}</h5>
-          <p className="text-muted">{tool.desc}</p>
+          {/* Контейнер текста с той же шириной */}
+          <div className="tool-text" style={{ maxWidth: "300px" }}>
+            <h5>{tool.title}</h5>
+            <p className="text-muted">{tool.desc}</p>
 
-          {/* Иконка "Скоро релиз" с Bootstrap Icon */}
-          <div className="mt-auto d-flex flex-column align-items-center text-secondary">
-            <i className="bi bi-hourglass-split" style={{ fontSize: "1.5rem" }}></i>
-            <span className="small">Скоро релиз</span>
+            {/* Иконка "Скоро релиз" */}
+            <div className="release-soon mt-2 d-flex align-items-center gap-2 justify-content-center">
+              <i className="bi bi-hourglass-split release-icon"></i>
+              <span>Релиз: осень 2025</span>
+            </div>
           </div>
         </div>
       ))}
-
     </div>
   </div>
 </section>
+
 
 
         {/* Призыв к действию */}

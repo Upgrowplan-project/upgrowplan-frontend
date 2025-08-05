@@ -109,8 +109,8 @@ export default function ContactsPage() {
                    checked={isChecked} onChange={() => setIsChecked(!isChecked)} />
             <label className="form-check-label" htmlFor="policyCheck">
               Отправляя данное сообщение, я ознакомился и согласился с{' '}
-              <a href="/policy" target="_blank">Политикой конфиденциальности</a> и{' '}
-              <a href="/policy" target="_blank">Политикой обработки персональных данных</a>.
+              <a href="/privacy" target="_blank">Политикой конфиденциальности</a> и{' '}
+              <a href="/privacy" target="_blank">Политикой обработки персональных данных</a>.
             </label>
           </div>
           <button type="submit" className="btn btn-primary w-100" disabled={!isChecked}>
@@ -119,16 +119,17 @@ export default function ContactsPage() {
         </form>
       </main>
 
-      {/* Footer */}
-      <footer style={{ backgroundColor: '#A8F000', color: '#000' }} className="py-3 mt-5">
-        <div className="container d-flex justify-content-between flex-wrap">
-          <div>© 2025 UpGrowPlan. Все права защищены.</div>
-          <div>
-            <a href="/policy" className="text-dark me-3">Политика конфиденциальности</a>
-            <a href="/policy" className="text-dark">Политика обработки данных</a>
-          </div>
-        </div>
-      </footer>
+{/* Footer */}
+<footer style={{ backgroundColor: '#A8F000', color: '#000' }} className="py-3 mt-5">
+  <div className="container d-flex justify-content-between flex-wrap">
+    <div>© 2025 UpGrowPlan. Все права защищены.</div>
+    <div>
+      <a href="/privacy" className="text-dark me-3">Политика конфиденциальности</a>
+      <a href="/privacy" className="text-dark">Политика обработки данных</a>
+    </div>
+  </div>
+</footer>
+
     </div>
   );
 }
