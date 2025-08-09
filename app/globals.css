@@ -84,3 +84,30 @@ body {
     opacity: 1;
   }
 }
+/* Основной фирменный цвет текста (заголовков) */
+.text-brand {
+  color: #1e6078;
+}
+
+/* Цвет ссылок в меню */
+.nav-link-custom {
+  color: #0785f6 !important;
+  text-decoration: none;
+}
+
+/* Убрать подчеркивание ссылок в футере */
+.footer-menu a {
+  color: #0785f6;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footer-menu a:hover {
+  text-decoration: underline;
+}
+
+/* Для одиночных блоков на всю ширину */
+.full-width-block {
+  width: 100%;
+  max-width: 100%;
+}

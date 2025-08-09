@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { Card } from 'react-bootstrap';
+import Link from 'next/link';
 import { FaClock, FaDollarSign, FaChartLine } from 'react-icons/fa';
 
 export default function ProductsPage() {
@@ -122,31 +123,11 @@ export default function ProductsPage() {
               id="navbarNav"
             >
               <ul className="navbar-nav ms-auto mb-2 mb-md-0">
-                <li className="nav-item">
-                  <a className="nav-link" href="/products">
-                    Продукты
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Сервисы
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Блог
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    О нас
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Контакты
-                  </a>
-                </li>
+                                <li className="nav-item"><a className="nav-link" href="/products" style={{ color: '#0785f6' }}>Продукты</a></li>
+                <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Сервисы</a></li>
+                <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Блог</a></li>
+                <li className="nav-item"><a className="nav-link" href="/about" style={{ color: '#0785f6' }}>О нас</a></li>
+                <li className="nav-item"><a className="nav-link" href="/contacts" style={{ color: '#0785f6' }}>Контакты</a></li>
               </ul>
             </div>
           </div>
@@ -211,28 +192,15 @@ export default function ProductsPage() {
       </main>
 
       {/* Footer */}
-      <footer
-        style={{ backgroundColor: '#A8F000' }}
-        className="py-3 mt-5 text-dark"
-      >
-        <div className="container d-flex justify-content-between flex-wrap align-items-center">
-          <div>© 2025 UpGrowPlan. Все права защищены.</div>
-          <ul className="nav">
-            <li className="nav-item">
-              <a href="#" className="nav-link px-2 text-dark">
-                Политика конфиденциальности
-              </a>
-            </li>
-            <li className="nav-item">
-              <a href="#" className="nav-link px-2 text-dark">
-                Пользовательское соглашение
-              </a>
-            </li>
-            <li className="nav-item">
-              <a href="#" className="nav-link px-2 text-dark">
-                Контакты
-              </a>
-            </li>
+      <footer className="bg-light py-4">
+        <div className="container d-flex justify-content-between align-items-center small flex-wrap">
+          <div className="text-muted">© {new Date().getFullYear()} Up & Grow. Все права защищены.</div>
+          <ul className="list-inline mb-0">
+            <li className="list-inline-item"><Link href="/">Главная</Link></li>
+            <li className="list-inline-item"><Link href="/about">О нас</Link></li>
+            <li className="list-inline-item"><Link href="/tools">Инструменты</Link></li>
+            <li className="list-inline-item"><Link href="/blog">Блог</Link></li>
+            <li className="list-inline-item"><Link href="/contact">Контакты</Link></li>
           </ul>
         </div>
       </footer>

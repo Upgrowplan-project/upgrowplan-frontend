@@ -29,7 +29,10 @@ export default function Home() {
               <li className="nav-item"><a className="nav-link" href="/products" style={{ color: '#0785f6' }}>Продукты</a></li>
               <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Сервисы</a></li>
               <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Блог</a></li>
-              <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>О нас</a></li>
+              <li className="nav-item">
+  <a className="nav-link" href="/about" style={{ color: '#0785f6' }}>О нас</a>
+</li>
+
               <li className="nav-item"><a className="nav-link" href="/contacts" style={{ color: '#0785f6' }}>Контакты</a></li>
             </ul>
           </div>
