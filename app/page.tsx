@@ -21,82 +21,111 @@ export default function Home() {
             className="navbar-toggler"
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-controls="navbarNav"
+            aria-expanded={menuOpen}
+            aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`}>
-            <ul className="navbar-nav ms-auto mb-2 mb-md-0">
-              <li className="nav-item"><a className="nav-link" href="/products" style={{ color: '#0785f6' }}>Продукты</a></li>
-              <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Сервисы</a></li>
-              <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Блог</a></li>
-              <li className="nav-item">
-  <a className="nav-link" href="/about" style={{ color: '#0785f6' }}>О нас</a>
-</li>
 
-              <li className="nav-item"><a className="nav-link" href="/contacts" style={{ color: '#0785f6' }}>Контакты</a></li>
-            </ul>
-          </div>
+
+          <div 
+  className={`collapse navbar-collapse ${menuOpen ? 'show' : ''} px-3 py-2`} 
+  id="navbarNav"
+  style={{backgroundColor: '#d7ecf6'}}
+>
+  <ul className="navbar-nav ms-auto mb-2 mb-md-0">
+    {['products', 'services', 'blog', 'about', 'contacts'].map((item) => {
+      const hrefMap: Record<string,string> = {
+        products: '/products',
+        services: '/solutions',
+        blog: '/blog',
+        about: '/about',
+        contacts: '/contacts'
+      };
+      const textMap: Record<string,string> = {
+        products: 'Продукты',
+        services: 'Решения',
+        blog: 'Блог',
+        about: 'О нас',
+        contacts: 'Контакты'
+      };
+      return (
+        <li key={item} className="nav-item">
+          <a className="nav-link px-3 py-2" href={hrefMap[item]} style={{ color: '#0785f6' }}>
+            {textMap[item]}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+
         </nav>
       </header>
 
       <main>
-{/* Hero Section с видео / картинкой */}
-<section
-  className="position-relative text-center d-flex flex-column justify-content-center align-items-center"
-  style={{ minHeight: '60vh', color: '#fff', overflow: 'hidden' }}
-  data-aos="fade-up"
->
-  {/* Видео только для desktop */}
-  <video
-    className="position-absolute top-50 start-50 translate-middle d-none d-md-block"
-    src="/video/hero.mp4"
-    autoPlay
-    muted
-    loop
-    playsInline
-    style={{
-      minWidth: '100%',
-      minHeight: '100%',
-      objectFit: 'cover',
-      zIndex: -1
-    }}
-  />
+        {/* Hero Section с видео / картинкой */}
+        <section
+          className="position-relative text-center d-flex flex-column justify-content-center align-items-center"
+          style={{ minHeight: '60vh', color: '#fff', overflow: 'hidden' }}
+          data-aos="fade-up"
+        >
+          {/* Видео только для desktop */}
+          <video
+            className="position-absolute top-50 start-50 translate-middle d-none d-md-block"
+            src="/video/hero.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            style={{
+              minWidth: '100%',
+              minHeight: '100%',
+              objectFit: 'cover',
+              zIndex: -1
+            }}
+          />
 
-  {/* Фоновая картинка только для мобильных */}
-  <Image
-    src="/images/hero-mobile.jpg"
-    alt="Hero mobile"
-    fill
-    className="d-block d-md-none"
-    style={{ objectFit: 'cover', zIndex: -1 }}
-  />
+          {/* Фоновая картинка только для мобильных */}
+          <Image
+            src="/images/hero-mobile.jpg"
+            alt="Hero mobile"
+            fill
+            className="d-block d-md-none"
+            style={{ objectFit: 'cover', zIndex: -1 }}
+          />
 
-  {/* Overlay только для desktop (чтобы не затемнять мобильную картинку) */}
-  <div
-    className="position-absolute top-0 start-0 w-100 h-100 d-none d-md-block"
-    style={{ backgroundColor: 'rgba(30, 96, 120, 0.55)', zIndex: 0 }}
-  />
+          {/* Overlay только для desktop (чтобы не затемнять мобильную картинку) */}
+          <div
+            className="position-absolute top-0 start-0 w-100 h-100 d-none d-md-block"
+            style={{ backgroundColor: 'rgba(30, 96, 120, 0.55)', zIndex: 0 }}
+          />
 
-  {/* Контент */}
-  <div className="container position-relative" style={{ zIndex: 1 }}>
-    <h1 className="fw-bold mb-3 px-3">
-      От идеи до готового бизнес-плана и финансовой модели с AI и экспертной поддержкой
-    </h1>
-    <p className="lead mb-4 px-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      Вы занимаетесь тем, что зажигает вас — печёте хлеб, шьёте платье, преподаёте английский.
-      Мы берём на себя расчёты и финансы. Non‑Excel люди не тратят время на скучные таблицы —
-      мы, профессиональные экономисты и программисты, делаем это за вас.
-    </p>
-    <div className="d-flex gap-3 flex-wrap justify-content-center" data-aos="zoom-in">
-      <a href="/brif" className="btn btn-primary btn-lg">Начать расчет →</a>
-      <a href="#" className="btn btn-outline-light btn-lg">Посмотреть пример бизнес‑плана</a>
-    </div>
-  </div>
-</section>
-
+          {/* Контент */}
+          <div className="container position-relative" style={{ zIndex: 1 }}>
+            <h1 className="fw-bold mb-3 px-3">
+              От идеи до готового бизнес-плана и финансовой модели с AI и экспертной поддержкой
+            </h1>
+            <p className="lead mb-4 px-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
+              Вы занимаетесь тем, что зажигает вас — печёте хлеб, шьёте платье, преподаёте английский.
+              Мы берём на себя расчёты и финансы. Non‑Excel люди не тратят время на скучные таблицы —
+              мы, профессиональные экономисты и программисты, делаем это за вас.
+            </p>
+            <div className="d-flex gap-3 flex-wrap justify-content-center" data-aos="zoom-in">
+              <a href="/brif" className="btn btn-primary btn-lg">Начать расчет →</a>
+              <a href="#" className="btn btn-outline-light btn-lg">Посмотреть пример бизнес‑плана</a>
+            </div>
+          </div>
+        </section>
 
         {/* Что мы делаем */}
-        <section className="container py-5" data-aos="fade-up">
+        <section
+          className="container py-5"
+          data-aos="fade-up"
+          style={{ backgroundColor: '#fff', color: '#000' }} // принудительно светлая тема
+        >
           <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Что мы делаем</h2>
           <div className="row g-4">
             {[
@@ -150,59 +179,55 @@ export default function Home() {
           </div>
         </section>
 
-{/* AI-инструменты */}
-<section className="py-5" style={{ backgroundColor: '#f8f9fa' }} data-aos="fade-up">
-  <div className="container">
-    <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Наши AI‑инструменты</h2>
-    <div className="row g-4">
-      {[
-        {
-          img: "/images/tool5.png",
-          title: "FinPilot",
-          desc: "Автоматические финансовые модели. Получите бесплатный и мгновенный расчет прибыли / ипотеки / акции. Вариативность сценариев / стран"
-        },
-        {
-          img: "/images/tool6.png",
-          title: "PlanMaster AI",
-          desc: "AI-генератор бизнес планов. Используются LLM-модели, натренированные по экономическому стеку + агенты, обеспечивающие модель сегодняшней проверенными данными. Технологии RAG, fine-tuning"
-        },
-        {
-          img: "/images/tool7.png",
-          title: "MarketSense AI",
-          desc: "AI-консультант в Web / Telegram. Формирование стратегии, анализ рынка, гибридная финансовая модель"
-        }
-      ].map((tool, i) => (
-        <div key={i} className="col-12 col-md-4 text-center d-flex flex-column align-items-center" data-aos="zoom-in" data-aos-delay={i * 100}>
-          
-          {/* Контейнер изображения с фиксированными размерами */}
-          <div className="tool-image-wrapper mb-3">
-            <Image 
-              src={tool.img} 
-              alt={tool.title} 
-              width={300} 
-              height={200} 
-              className="img-fluid rounded shadow tool-image" 
-            />
-          </div>
-
-          {/* Контейнер текста с той же шириной */}
-          <div className="tool-text" style={{ maxWidth: "300px" }}>
-            <h5>{tool.title}</h5>
-            <p className="text-muted">{tool.desc}</p>
-
-            {/* Иконка "Скоро релиз" */}
-            <div className="release-soon mt-2 d-flex align-items-center gap-2 justify-content-center">
-              <i className="bi bi-hourglass-split release-icon"></i>
-              <span>Релиз: осень 2025</span>
+        {/* AI-инструменты */}
+        <section
+          className="py-5"
+          style={{ backgroundColor: '#fff', color: '#000' }} // принудительно светлая тема
+          data-aos="fade-up"
+        >
+          <div className="container">
+            <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>Наши AI‑инструменты</h2>
+            <div className="row g-4">
+              {[
+                {
+                  img: "/images/tool5.png",
+                  title: "FinPilot",
+                  desc: "Автоматические финансовые модели. Получите бесплатный и мгновенный расчет прибыли / ипотеки / акции. Вариативность сценариев / стран"
+                },
+                {
+                  img: "/images/tool6.png",
+                  title: "PlanMaster AI",
+                  desc: "AI-генератор бизнес планов. Используются LLM-модели, натренированные по экономическому стеку + агенты, обеспечивающие модель сегодняшней проверенными данными. Технологии RAG, fine-tuning"
+                },
+                {
+                  img: "/images/tool7.png",
+                  title: "MarketSense AI",
+                  desc: "AI-консультант в Web / Telegram. Формирование стратегии, анализ рынка, гибридная финансовая модель"
+                }
+              ].map((tool, i) => (
+                <div key={i} className="col-12 col-md-4 text-center d-flex flex-column align-items-center" data-aos="zoom-in" data-aos-delay={i * 100}>
+                  <div className="tool-image-wrapper mb-3">
+                    <Image 
+                      src={tool.img} 
+                      alt={tool.title} 
+                      width={300} 
+                      height={200} 
+                      className="img-fluid rounded shadow tool-image" 
+                    />
+                  </div>
+                  <div className="tool-text" style={{ maxWidth: "300px" }}>
+                    <h5>{tool.title}</h5>
+                    <p className="text-muted">{tool.desc}</p>
+                    <div className="release-soon mt-2 d-flex align-items-center gap-2 justify-content-center">
+                      <i className="bi bi-hourglass-split release-icon"></i>
+                      <span>Релиз: осень 2025</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
+        </section>
 
         {/* Призыв к действию */}
         <section className="text-center py-5" data-aos="fade-up">

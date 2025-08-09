@@ -123,11 +123,11 @@ export default function ProductsPage() {
               id="navbarNav"
             >
               <ul className="navbar-nav ms-auto mb-2 mb-md-0">
-                                <li className="nav-item"><a className="nav-link" href="/products" style={{ color: '#0785f6' }}>Продукты</a></li>
-                <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Сервисы</a></li>
-                <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Блог</a></li>
-                <li className="nav-item"><a className="nav-link" href="/about" style={{ color: '#0785f6' }}>О нас</a></li>
-                <li className="nav-item"><a className="nav-link" href="/contacts" style={{ color: '#0785f6' }}>Контакты</a></li>
+              <li className="nav-item"><a className="nav-link" href="/products" style={{ color: '#0785f6' }}>Продукты</a></li>
+              <li className="nav-item"><a className="nav-link" href="/solutions" style={{ color: '#0785f6' }}>Решения</a></li>
+              <li className="nav-item"><a className="nav-link" href="/blog" style={{ color: '#0785f6' }}>Блог</a></li>
+              <li className="nav-item"><a className="nav-link" href="/about" style={{ color: '#0785f6' }}>О нас</a></li>
+              <li className="nav-item"><a className="nav-link" href="/contacts" style={{ color: '#0785f6' }}>Контакты</a></li>
               </ul>
             </div>
           </div>
@@ -139,8 +139,7 @@ export default function ProductsPage() {
           Продукты платформы
         </h1>
         <p style={{ color: '#0785f6', fontSize: '1.1rem' }}>
-          Мы предлагаем комплексно два вида решений для планирования и анализа
-          бизнеса: индивидуальные бизнес‑решения и автоматические инструменты.
+          Индивидуальные бизнес‑решения, которые выполняются лично экспертом под конкретную задачу. 
         </p>
         <div className="row g-4">
           {products.map((product, index) => (

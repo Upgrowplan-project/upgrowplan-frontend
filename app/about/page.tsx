@@ -108,11 +108,11 @@ export default function AboutPage() {
             </button>
             <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbarNav">
               <ul className="navbar-nav ms-auto mb-2 mb-md-0">
-                <li className="nav-item"><a className="nav-link" href="/products" style={{ color: '#0785f6' }}>Продукты</a></li>
-                <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Сервисы</a></li>
-                <li className="nav-item"><a className="nav-link" href="#" style={{ color: '#0785f6' }}>Блог</a></li>
-                <li className="nav-item"><a className="nav-link" href="/about" style={{ color: '#0785f6' }}>О нас</a></li>
-                <li className="nav-item"><a className="nav-link" href="/contacts" style={{ color: '#0785f6' }}>Контакты</a></li>
+              <li className="nav-item"><a className="nav-link" href="/products" style={{ color: '#0785f6' }}>Продукты</a></li>
+              <li className="nav-item"><a className="nav-link" href="/solutions" style={{ color: '#0785f6' }}>Решения</a></li>
+              <li className="nav-item"><a className="nav-link" href="/blog" style={{ color: '#0785f6' }}>Блог</a></li>
+              <li className="nav-item"><a className="nav-link" href="/about" style={{ color: '#0785f6' }}>О нас</a></li>
+              <li className="nav-item"><a className="nav-link" href="/contacts" style={{ color: '#0785f6' }}>Контакты</a></li>
               </ul>
             </div>
           </div>
@@ -122,16 +122,13 @@ export default function AboutPage() {
       {/* КОНТЕНТ СТРАНИЦЫ */}
       <main className="container py-5">
         <h1 className="mb-4" style={{ color: '#1e6078' }}>О проекте Upgrowplan</h1>
-        <p style={{ color: '#0785f6', fontSize: '1.1rem', marginBottom: '2rem' }}>
-          Upgrowplan — это небольшая независимая команда экспертов, которая сочетает глубокие знания в области экономики с современными технологиями для создания инструментов планирования и развития бизнеса.
-        </p>
 
 {/* Блок "Кто мы" - на полную ширину */}
 <div className="row justify-content-center">
   <FullWidthCard>
     <h2 className="text-center mb-4" style={{ color: '#1e6078' }}>🧠 Кто мы</h2>
     <p className="mb-4 text-center">
-      Upgrowplan — это небольшая, независимая команда, сочетающая экономическую экспертизу, аналитику и разработку.
+          Upgrowplan — это небольшая независимая команда экспертов, которая сочетает глубокие знания в области экономики с современными технологиями для создания инструментов планирования и развития бизнеса.
     </p>
     
     <div className="row">
@@ -151,9 +148,9 @@ export default function AboutPage() {
         
       />
       <TeamMemberCard 
-        name="Максим Петров"
+        name="Дмитрий Волков"
         role="Веб-разработчик, технический специалист"
-        description="Опытный разработчик с широким техническим стеком и 5+ годами практического опыта. Занимается созданием пользовательских интерфейсов, интеграцией API и оптимизацией производительности веб-приложений."
+        description="опытный разработчик, специализирующийся на серверной части приложения и обработки данных. Занимается интеграцией API, оптимизацией систем, а также управлением базами данных и взаимодействием с внешними сервисами"
         photoSrc="/images/dima.jpg"
         
       />
