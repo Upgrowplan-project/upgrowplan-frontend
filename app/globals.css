@@ -111,3 +111,15 @@ body {
   width: 100%;
   max-width: 100%;
 }
+
+/* Глобальные стили для всех форм */
+* {
+  box-sizing: border-box;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}

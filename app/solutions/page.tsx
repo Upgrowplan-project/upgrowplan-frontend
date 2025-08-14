@@ -16,7 +16,7 @@ export default function SolutionsPage() {
       description:
         'Подборка готовых финансовых моделей. Открывай, меняй параметры, смотри прогнозы — всё бесплатно.',
       icon: <FiBarChart2 className="me-2 text-success" />,
-      link: '/fin-model',
+      link: '/fin-model/model1/',
     },
     {
       title: 'MarketSense AI Agent',
