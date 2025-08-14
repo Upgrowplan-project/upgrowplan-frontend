@@ -20,7 +20,7 @@ export default function Header() {
               style={{ maxWidth: '100%', height: 'auto' }}
             />
             <span className="ms-2" style={{ color: '#1e6078', fontWeight: 'bold' }}>
-              UpGrowPlan
+              Upgrowplan
             </span>
           </Link>
           <button

@@ -14,7 +14,7 @@ export default function SolutionsPage() {
     {
       title: 'FinPilot Free',
       description:
-        'Подборка готовых финансовых моделей. Открывай, меняй параметры, смотри прогнозы — всё бесплатно.',
+        'Готовые финансовые моделеи. Открывай, меняй параметры, смотри прогнозы — всё бесплатно.',
       icon: <FiBarChart2 className="me-2 text-success" />,
       link: '/fin-model/model1/',
     },

@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="bg-light py-4">
       <div className="container d-flex justify-content-between align-items-center small flex-wrap">
-        <div className="text-muted">© {new Date().getFullYear()} Up & Grow. Все права защищены.</div>
+        <div className="text-muted">© {new Date().getFullYear()} Upgrowplan. Все права защищены.</div>
         <ul className="list-inline mb-0" style={{ marginBottom: 0 }}>
           <li className="list-inline-item">
             <Link href="/" style={{ textDecoration: 'none', color: '#0785f6' }}>

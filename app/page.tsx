@@ -2,69 +2,19 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+
+
+
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div>
-      {/* Header */}
-      <header className="shadow-sm" style={{ backgroundColor: '#d7ecf6' }}>
-        <nav className="navbar navbar-expand-md navbar-light container">
-          <a className="navbar-brand d-flex align-items-center" href="/">
-            <Image src="/LogoUpGrowSmall2.png" alt="Up&Grow Logo" width={40} height={40} />
-            <span className="ms-2 fw-bold" style={{ color: '#1e6078' }}>
-              UpGrowPlan
-            </span>
-          </a>
-          <button
-            className="navbar-toggler"
-            type="button"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-controls="navbarNav"
-            aria-expanded={menuOpen}
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-
-
-          <div 
-  className={`collapse navbar-collapse ${menuOpen ? 'show' : ''} px-3 py-2`} 
-  id="navbarNav"
-  style={{backgroundColor: '#d7ecf6'}}
->
-  <ul className="navbar-nav ms-auto mb-2 mb-md-0">
-    {['products', 'services', 'blog', 'about', 'contacts'].map((item) => {
-      const hrefMap: Record<string,string> = {
-        products: '/products',
-        services: '/solutions',
-        blog: '/blog',
-        about: '/about',
-        contacts: '/contacts'
-      };
-      const textMap: Record<string,string> = {
-        products: 'Продукты',
-        services: 'Решения',
-        blog: 'Блог',
-        about: 'О нас',
-        contacts: 'Контакты'
-      };
-      return (
-        <li key={item} className="nav-item">
-          <a className="nav-link px-3 py-2" href={hrefMap[item]} style={{ color: '#0785f6' }}>
-            {textMap[item]}
-          </a>
-        </li>
-      );
-    })}
-  </ul>
-</div>
-
-
-        </nav>
-      </header>
-
+      <Header />
+      
       <main>
         {/* Hero Section с видео / картинкой */}
         <section
@@ -88,15 +38,7 @@ export default function Home() {
             }}
           />
 
-          {/* Фоновая картинка только для мобильных */}
-          <Image
-            src="/images/hero-mobile.jpg"
-            alt="Hero mobile"
-            fill
-            className="d-block d-md-none"
-            style={{ objectFit: 'cover', zIndex: -1 }}
-          />
-
+         
           {/* Overlay только для desktop (чтобы не затемнять мобильную картинку) */}
           <div
             className="position-absolute top-0 start-0 w-100 h-100 d-none d-md-block"
@@ -114,8 +56,8 @@ export default function Home() {
               мы, профессиональные экономисты и программисты, делаем это за вас.
             </p>
             <div className="d-flex gap-3 flex-wrap justify-content-center" data-aos="zoom-in">
-              <a href="/brif" className="btn btn-primary btn-lg">Начать расчет →</a>
-              <a href="#" className="btn btn-outline-light btn-lg">Посмотреть пример бизнес‑плана</a>
+              <a href="/products" className="btn btn-primary btn-lg">Экспертные решения</a>
+              <a href="/solutions" className="btn btn-primary btn-lg">Автоматические инструменты</a>
             </div>
           </div>
         </section>
@@ -234,20 +176,13 @@ export default function Home() {
           <h2 className="mb-3" style={{ color: '#1e6078' }}>
             Сфокусируйтесь на любимом деле — остальное мы сделаем за вас
           </h2>
-          <a href="/brif" className="btn btn-primary btn-lg">Получить расчет →</a>
+          <a href="/contacts" className="btn btn-primary btn-lg">Написать нам →</a>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="py-3 mt-5" style={{ backgroundColor: '#A8F000', color: '#000' }}>
-        <div className="container d-flex justify-content-between flex-wrap">
-          <div>© 2025 UpGrowPlan. Все права защищены.</div>
-          <div>
-            <a href="/policy" className="text-dark me-3">Политика конфиденциальности</a>
-            <a href="/policy" className="text-dark">Пользовательское соглашение</a>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <Footer />
+      
+     </div>
   );
 }

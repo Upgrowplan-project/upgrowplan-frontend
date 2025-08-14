@@ -123,3 +123,17 @@ textarea,
 button {
   font-family: inherit;
 }
+/* Убираем рамку у меню-бургера в мобильной версии */
+@media (max-width: 767px) {
+  .navbar-toggler {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0.25rem 0.5rem;
+    /* можно чуть уменьшить отступы, если надо */
+  }
+
+  .navbar-toggler:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
