@@ -40,39 +40,76 @@ export default function Home() {
 
   {/* Картинка только для mobile */}
   <img
-    src="/img/team.jpg"
+    src="/images/team.jpg"
     alt="Наша команда"
-    className="position-absolute top-50 start-50 translate-middle d-block d-md-none"
+    className="d-block d-md-none w-100"
     style={{
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-      zIndex: -1
+      height: 'auto',
+      objectFit: 'cover'
     }}
   />
 
   {/* Overlay только для desktop */}
   <div
     className="position-absolute top-0 start-0 w-100 h-100 d-none d-md-block"
-    style={{ backgroundColor: 'rgba(30, 96, 120, 0.55)', zIndex: 0 }}
+    style={{
+      backgroundColor: 'rgba(30, 96, 120, 0.55)',
+      zIndex: 0
+    }}
   />
 
   {/* Контент */}
-  <div className="container position-relative" style={{ zIndex: 1, color: '#1e6078' }}>
-    <h1 className="fw-bold mb-3 px-3">
+  <div
+    className="container position-relative py-4 py-md-0"
+    style={{
+      zIndex: 1,
+      color: '#1e6078'
+    }}
+  >
+    <h1
+      className="fw-bold mb-3 px-3"
+      style={{
+        color: 'inherit'
+      }}
+    >
       У вас есть идея? Давайте превратим ее в план!
     </h1>
-    <p className="lead mb-4 px-3" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      Вы занимаетесь тем, что зажигает вас — печёте хлеб, шьёте платье, преподаёте английский.
-      Мы берём на себя расчёты и финансы. Non-excel люди не тратят время на скучные таблицы —
-      мы сделаем это за вас.
+
+    <p
+      className="lead mb-4 px-3"
+      style={{
+        maxWidth: '800px',
+        margin: '0 auto'
+      }}
+    >
+      Вы занимаетесь тем, что зажигает вас — печёте хлеб, шьёте платье, преподаёте
+      английский. Мы берём на себя расчёты и финансы. Non-excel люди не тратят время
+      на скучные таблицы — мы сделаем это за вас.
     </p>
-    <div className="d-flex gap-3 flex-wrap justify-content-center" data-aos="zoom-in">
-      <a href="/products" className="btn btn-primary btn-lg">Экспертные решения</a>
-      <a href="/solutions" className="btn btn-primary btn-lg">Автоматические инструменты</a>
+
+    <div
+      className="d-flex gap-3 flex-wrap justify-content-center"
+      data-aos="zoom-in"
+    >
+      <a href="/products" className="btn btn-primary btn-lg">
+        Экспертные решения
+      </a>
+      <a href="/solutions" className="btn btn-primary btn-lg">
+        Автоматические инструменты
+      </a>
     </div>
   </div>
+
+  <style jsx>{`
+    /* Только для desktop */
+    @media (min-width: 768px) {
+      section div.container {
+        color: white !important;
+      }
+    }
+  `}</style>
 </section>
+
 
         {/* Что мы делаем */}
         <section
@@ -147,7 +184,7 @@ export default function Home() {
       {[
         {
           img: "/images/tool5.png",
-          title: "FinPilot",
+          title: "FinPilot Free",
           desc: "Автоматические финансовые модели. Получите бесплатный и мгновенный расчет прибыли / ипотеки / акции. Вариативность сценариев / стран"
         },
         {

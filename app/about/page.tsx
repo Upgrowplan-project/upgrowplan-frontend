@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 export default function AboutPage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -86,38 +88,7 @@ export default function AboutPage() {
 
   return (
     <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
-      {/* Header */}
-      <header>
-        <nav className="navbar navbar-expand-md navbar-light" style={{ backgroundColor: '#d7ecf6' }}>
-          <div className="container">
-            <a className="navbar-brand d-flex align-items-center" href="/">
-              <Image src="/LogoUpGrowSmall2.png" alt="Up&Grow Logo" width={40} height={40} style={{ maxWidth: '100%', height: 'auto' }} />
-              <span className="ms-2" style={{ color: '#1e6078', fontWeight: 'bold' }}>
-                Upgrowplan
-              </span>
-            </a>
-            <button
-              className="navbar-toggler"
-              type="button"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-controls="navbarNav"
-              aria-expanded={menuOpen}
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbarNav">
-              <ul className="navbar-nav ms-auto mb-2 mb-md-0">
-              <li className="nav-item"><a className="nav-link" href="/products" style={{ color: '#0785f6' }}>Продукты</a></li>
-              <li className="nav-item"><a className="nav-link" href="/solutions" style={{ color: '#0785f6' }}>Решения</a></li>
-              <li className="nav-item"><a className="nav-link" href="/blog" style={{ color: '#0785f6' }}>Блог</a></li>
-              <li className="nav-item"><a className="nav-link" href="/about" style={{ color: '#0785f6' }}>О нас</a></li>
-              <li className="nav-item"><a className="nav-link" href="/contacts" style={{ color: '#0785f6' }}>Контакты</a></li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </header>
+      <Header />
 
       {/* КОНТЕНТ СТРАНИЦЫ */}
       <main className="container py-5">
@@ -164,7 +135,6 @@ export default function AboutPage() {
             <h2 className="text-center" style={{ color: '#1e6078' }}>🚀 Что мы делаем:</h2>
             <p>Мы создаём инструменты, которые помогают запускать и развивать бизнес. <br />Upgrowplan — это индивидуальные персонализированные решения и цифровые сервисы, которые объединяют бизнес-экспертизу и современные технологии. Мы автоматизируем расчёты, визуализируем данные, подсказываем, как двигаться, и помогаем принимать обоснованные решения.</p>
             <p><em>Основано на опыте. Улучшается вместе с вами.</em></p>
-            <p><strong>🖼️ Место для иллюстрации:</strong> пользовательский интерфейс/скриншот сервиса, примеры шаблонов или дашборда</p>
           </Card>
 
           <Card>
@@ -226,12 +196,6 @@ export default function AboutPage() {
         </div>
 
         {/* Блок "Новый блок" - на полную ширину */}
-        <div className="row justify-content-center">
-          <FullWidthCard>
-            <h2 className="text-center" style={{ color: '#1e6078' }}>🆕 Новый блок</h2>
-            <p className="text-center">(позже будет контент)</p>
-          </FullWidthCard>
-        </div>
 
         <div className="row">
           <Card>
@@ -248,9 +212,8 @@ export default function AboutPage() {
   <h2 className="text-center" style={{ color: '#1e6078' }}>⚙️ Стэк технологий</h2>
   <p><strong>🧠 Для продвинутых пользователей:</strong></p>
   <ul>
-    <li>используем LLM API</li>
-    <li>RAG</li>
-    <li>интеграции через OpenAPI</li>
+    <li>интеграции LLM API</li>
+    <li>Генерация документов с дополненным поиском (RAG)</li>
     <li>тонкую настройку промптов и параметров</li>
     <li>обогащение моделей собственными датасетами</li>
     <li>CI/CD пайплайны</li>
@@ -271,18 +234,8 @@ export default function AboutPage() {
       </main>
 
       {/* ФУТЕР */}
-      <footer className="bg-light py-4">
-        <div className="container d-flex justify-content-between align-items-center small flex-wrap">
-          <div className="text-muted">© {new Date().getFullYear()} Up & Grow. Все права защищены.</div>
-          <ul className="list-inline mb-0">
-            <li className="list-inline-item"><Link href="/">Главная</Link></li>
-            <li className="list-inline-item"><Link href="/about">О нас</Link></li>
-            <li className="list-inline-item"><Link href="/tools">Инструменты</Link></li>
-            <li className="list-inline-item"><Link href="/blog">Блог</Link></li>
-            <li className="list-inline-item"><Link href="/contact">Контакты</Link></li>
-          </ul>
-        </div>
-      </footer>
+            <Footer />
+      
     </div>
   );
 }

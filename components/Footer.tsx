@@ -13,16 +13,22 @@ export default function Footer() {
               Главная
             </Link>
           </li>
+            <li className="list-inline-item">
+            <Link href="/products" style={{ textDecoration: 'none', color: '#0785f6' }}>
+              Продукты
+            </Link>
+          </li>
+            <li className="list-inline-item">
+            <Link href="/solutions" style={{ textDecoration: 'none', color: '#0785f6' }}>
+              Решения
+            </Link>
+          </li>
           <li className="list-inline-item">
             <Link href="/about" style={{ textDecoration: 'none', color: '#0785f6' }}>
               О нас
             </Link>
           </li>
-          <li className="list-inline-item">
-            <Link href="/tools" style={{ textDecoration: 'none', color: '#0785f6' }}>
-              Инструменты
-            </Link>
-          </li>
+
           <li className="list-inline-item">
             <Link href="/blog" style={{ textDecoration: 'none', color: '#0785f6' }}>
               Блог
