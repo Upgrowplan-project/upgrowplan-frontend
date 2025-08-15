@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import dynamic from 'next/dynamic';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
-// подключаем JS Bootstrap (нужно для работы бургер-меню)
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+//const Header = dynamic(() => import('@/components/Header'), { ssr: false });
+//const Footer = dynamic(() => import('@/components/Footer'), { ssr: false });
 
 export default function ContactsPage() {
   const [isChecked, setIsChecked] = useState(false);
@@ -14,6 +15,10 @@ export default function ContactsPage() {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    import('bootstrap/dist/js/bootstrap.bundle.min.js');
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +39,6 @@ export default function ContactsPage() {
       <main className="container my-5">
         <h1 className="mb-4" style={{ color: '#1e6078' }}>Контакты</h1>
 
-        {/* Кнопки-ссылки */}
         <div className="d-flex flex-wrap gap-3 mb-4" style={{ maxWidth: '320px' }}>
           <a href="https://web.telegram.org/a/#-2072779175389" target="_blank" className="contact-btn" style={{ color: '#0088cc' }}>Telegram</a>
           <a href="https://wa.me/79814504618" target="_blank" className="contact-btn" style={{ color: '#25d366' }}>WhatsApp</a>
@@ -42,7 +46,6 @@ export default function ContactsPage() {
           <a href="https://www.linkedin.com/company/upgrowplan/" target="_blank" className="contact-btn" style={{ color: '#0A66C2' }}>LinkedIn</a>
         </div>
 
-        {/* Форма */}
         <form className="border p-4 rounded bg-light shadow-sm" style={{ maxWidth: '600px' }} onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="name" className="form-label">Имя</label>
