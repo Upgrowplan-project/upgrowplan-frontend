@@ -84,15 +84,16 @@ export default function FinModelPage() {
 
     setResultHtml('<i class="fa fa-spinner fa-spin"></i> Выполняется расчет...');
 
-    try {
-      const resp = await fetch(
-        'https://exotic-ainslee-upgrow-0577c1d4.koyeb.app/api/finance/calculate',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dataRaw),
-        }
-      );
+ try {
+  const resp = await fetch(
+    'https://upgrowplan-backend-9736a5b5c447.herokuapp.com/api/finance/calculate',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dataRaw),
+    }
+  );
+
       if (!resp.ok) throw new Error('Ошибка сервера');
       const result = await resp.json();
 

@@ -46,8 +46,7 @@ export default function SolutionsPage() {
 
   return (
     <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
-      {/* Header */}
-                  <Header />
+      <Header />
       
       <main className="container py-5">
         <h1 className="mb-4" style={{ color: '#1e6078' }}>
@@ -111,7 +110,6 @@ export default function SolutionsPage() {
         </div>
       </main>
 
-      {/* Footer */}
       <Footer />
       
     
