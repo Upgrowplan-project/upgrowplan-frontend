@@ -35,7 +35,7 @@ export default function Footer() {
             </Link>
           </li>
           <li className="list-inline-item">
-            <Link href="/contact" style={{ textDecoration: 'none', color: '#0785f6' }}>
+            <Link href="/contacts" style={{ textDecoration: 'none', color: '#0785f6' }}>
               Контакты
             </Link>
           </li>

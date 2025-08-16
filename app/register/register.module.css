@@ -1,0 +1,112 @@
+.registerPage {
+    font-family: "Inter", Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Общие кнопки */
+.registerBtn {
+    background-color: #d9ebf5;
+    color: #01346e;
+    border: 1px solid #01346e;
+    border-radius: 12px;
+    text-decoration: none !important;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    width: 300px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.registerBtn:hover {
+    background-color: #c2e0f2;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+
+/* Цвета кнопок */
+.googleBtn {
+    border-color: #DB4437;
+    color: #DB4437;
+}
+
+.facebookBtn {
+    border-color: #1877F2;
+    color: #1877F2;
+}
+.googleBtn:hover {
+    background-color: #c33c30;
+    color: #fff;
+}
+
+.facebookBtn:hover {
+    background-color: #155db6;
+    color: #fff;
+}
+
+.emailBtn {
+    border-color: #01346e;
+    color: #01346e;
+}
+
+/* Кнопка отправки формы */
+.submitBtn {
+    background-color: #0683f5;
+    color: #fff;
+    border: 1px solid #0683f5;
+}
+
+.submitBtn:hover {
+    background-color: #0566cc;
+    border-color: #0566cc;
+}
+
+/* Карточка формы */
+.registerCard {
+    border-radius: 12px;
+    background: #ffffff;
+    width: 100%;
+    max-width: 350px;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Анимация появления формы */
+.fadeSlideEnter {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.fadeSlideEnterActive {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 300ms ease-in-out;
+}
+
+.fadeSlideExit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fadeSlideExitActive {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 300ms ease-in-out;
+}
+
+/* Ссылка Войти */
+.loginLink {
+    text-decoration: none;
+    color: #0683f5;
+    font-weight: 500;
+}
+
+.loginLink:hover {
+    text-decoration: underline;
+}
