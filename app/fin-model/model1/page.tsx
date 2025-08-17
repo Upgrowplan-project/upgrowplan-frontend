@@ -97,18 +97,19 @@ export default function FinModelPage() {
       if (!resp.ok) throw new Error('Ошибка сервера');
       const result = await resp.json();
 
-      setResultHtml(`
-        <div><b>Чистая прибыль (NP):</b> ${result.totalNetProfit.toFixed(2)} тыс ₽</div>
-        <div><b>Рентабельность инвестиций (ROI):</b> ${result.roi.toFixed(2)}%</div>
+   setResultHtml(`
+        <div><b>Чистая прибыль (NP):</b> ${(result.totalNetProfit ?? 0).toFixed(2)} тыс ₽</div>
+        <div><b>Рентабельность инвестиций (ROI):</b> ${(result.roi ?? 0).toFixed(2)}%</div>
         <div><b>Срок окупаемости (PP):</b> ${
           result.paybackMonth > 0 ? result.paybackMonth + ' месяцев' : 'Не достигнута'
         }</div>
-        <div><b>EBITDA:</b> ${result.ebitda.toFixed(2)} тыс ₽</div>
-        <div><b>Cash Flow:</b> ${result.cashFlow.toFixed(2)} тыс ₽</div>
+        <div><b>EBITDA:</b> ${(result.ebitda ?? 0).toFixed(2)} тыс ₽</div>
+        <div><b>Cash Flow:</b> ${(result.cashFlow ?? 0).toFixed(2)} тыс ₽</div>
         <div><b>Точка безубыточности:</b> ${
           result.breakEvenMonth > 0 ? result.breakEvenMonth + ' месяцев' : 'Не достигнута'
         }</div>
       `);
+      
     } catch (err: any) {
       setResultHtml('Ошибка при расчёте: ' + err.message);
     }
