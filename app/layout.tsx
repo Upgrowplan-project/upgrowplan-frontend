@@ -6,8 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'aos/dist/aos.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
-
 import AOSWrapper from './AOSWrapper';
 
 const inter = Inter({
@@ -16,11 +14,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "UpGrowPlan — Бизнес‑планы, Финансовые модели и Аналитика",
-  description:
-    "UpGrowPlan — профессиональные бизнес‑планы, финансовые модели и маркетинговые исследования. 16+ лет опыта, более 230 реализованных проектов и 2,45 млн $ привлеченных инвестиций. Помогаем запускать и развивать бизнес грамотно.",
+  title:
+    "Upgrowplan | Бизнес-планы, Финансовые модели, Аналитика | Business-plans, Financial mdels, Analytics, Market research",
+  description: "UpGrowPlan: future planning service",
   icons: {
     icon: "/favicon.ico",
+  },
+  other: {
+    "google-site-verification": "VC2der9heI-3B_vfBFC91po9GzPr3_j5iK5B-zjmVLs",
   },
 };
 
@@ -30,11 +31,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <html lang="ru">
       <AOSWrapper />
-      <html lang="ru">
-        <body className={`${inter.variable} antialiased`}>{children}</body>
-      </html>
-    </>
+      <body className={`${inter.variable} antialiased`}>{children}</body>
+    </html>
   );
 }
