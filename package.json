@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "aos": "^2.3.4",
     "bootstrap": "^5.3.7",
     "bootstrap-icons": "^1.13.1",
     "next": "13.4.13",
+    "next-sitemap": "^4.2.3",
     "react": "18.2.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "18.2.0",

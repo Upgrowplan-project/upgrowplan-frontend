@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://upgrowplan.com
+
+# Sitemaps
+Sitemap: https://upgrowplan.com/sitemap.xml
