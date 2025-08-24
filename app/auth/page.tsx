@@ -2,47 +2,39 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
 import { FaGoogle, FaFacebookF, FaEnvelope } from "react-icons/fa";
 import { CSSTransition } from "react-transition-group";
-
 import styles from "./auth.module.css";
+import Image from "next/image";
 
-type Errors = Partial<Record<"email" | "password" | "confirmPassword" | "form", string>>;
+type Errors = Partial<Record<"email" | "password" | "form", string>>;
 
 export default function AuthPage() {
   const router = useRouter();
-  const [showLoginForm, setShowLoginForm] = useState(false);
-  const [showRegisterForm, setShowRegisterForm] = useState(false);
+  const [scenario, setScenario] = useState<"none" | "login" | "register">("none");
+  const [showEmailForm, setShowEmailForm] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
   const [okMsg, setOkMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const API_BASE =
     process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") || "http://localhost:8080";
 
-  // --- Валидация регистрации ---
   const validate = (): boolean => {
     const e: Errors = {};
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Неверный email";
     if (password.length < 8) e.password = "Минимум 8 символов";
-    if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
-      e.password = (e.password ? e.password + ". " : "") + "Пароль должен содержать буквы и цифры";
-    }
-    if (showRegisterForm && password !== confirm) e.confirmPassword = "Пароли не совпадают";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  // --- Отправка формы ---
-  const onSubmit = async (ev: React.FormEvent, type: "login" | "register") => {
+  const onSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     setOkMsg("");
     setErrors({});
@@ -50,139 +42,180 @@ export default function AuthPage() {
 
     setSubmitting(true);
     try {
-      const url =
-        type === "login" ? `${API_BASE}/api/auth/login` : `${API_BASE}/api/auth/register`;
-      const body =
-        type === "login" ? { email, password } : { email, password };
-
-      const res = await fetch(url, {
+      const endpoint = scenario === "login" ? "/api/auth/login" : "/api/auth/register";
+      const res = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ email, password }),
       });
 
       if (res.ok) {
-        if (type === "register") {
-          setOkMsg("Регистрация успешна. Перенаправляю на вход…");
-          setTimeout(() => setShowLoginForm(true), 800);
-        } else {
-          setOkMsg("Вход успешен. Перенаправляю…");
-          setTimeout(() => router.push("/"), 800);
-        }
+        setOkMsg(scenario === "login" ? "Вход выполнен" : "Регистрация успешна");
+        setTimeout(() => router.push("/"), 800);
       } else {
-        let msg = type === "login" ? "Ошибка входа" : "Ошибка регистрации";
-        try {
-          const data = await res.json();
-          msg = data?.message || msg;
-        } catch {}
-        setErrors({ form: msg });
+        const data = await res.json().catch(() => ({}));
+        setErrors({ form: data?.message || "Ошибка сервера" });
       }
-    } catch (e) {
-      setErrors({ form: "Сервер недоступен или CORS заблокирован" });
+    } catch {
+      setErrors({ form: "Сервер недоступен" });
     } finally {
       setSubmitting(false);
     }
   };
 
+  const renderPasswordStrength = (password: string) => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[\W_]/.test(password)) score++;
+
+    const strengthText =
+      score <= 2 ? "Слабый" : score === 3 ? "Средний" : "Сильный";
+
+    return (
+      <div className="d-flex align-items-center gap-1 mt-1">
+        {Array.from({ length: 5 }, (_, i) => (
+          <span key={i} style={{ color: i < score ? "#0683f5" : "#ddd" }}>★</span>
+        ))}
+        <span className="ms-2">{strengthText}</span>
+      </div>
+    );
+  };
+
   return (
     <>
       <Header />
-      <div className={`container py-5 ${styles.registerPage}`}>
-        <h1 className="h2 mb-4 text-center text-brand">Привет!</h1>
-
-        {errors.form && <div className="alert alert-danger">{errors.form}</div>}
-        {okMsg && <div className="alert alert-success">{okMsg}</div>}
-
-        <div className="d-flex flex-column align-items-center gap-3">
-          {/* Кнопка Войти */}
-          {!showLoginForm && (
+      <div className={`container py-5 ${styles.authPage}`}>
+        {/* Экран выбора сценария */}
+        {scenario === "none" && (
+          <div className="d-flex flex-column align-items-center gap-3">
+            <h1 className="h3 text-center mb-4">Привет!</h1>
             <button
-              className={`${styles.registerBtn} ${styles.emailBtn}`}
-              onClick={() => setShowLoginForm(true)}
+              className={`${styles.mainBtn} ${styles.loginBtn}`}
+              onClick={() => setScenario("login")}
             >
               Войти
             </button>
-          )}
+            <button
+              className={`${styles.mainBtn} ${styles.registerBtn}`}
+              onClick={() => setScenario("register")}
+            >
+              Создать аккаунт
+            </button>
+          </div>
+        )}
 
-          {/* Форма Входа */}
-          <CSSTransition
-            in={showLoginForm}
-            timeout={300}
-            classNames={{
-              enter: styles.fadeSlideEnter,
-              enterActive: styles.fadeSlideEnterActive,
-              exit: styles.fadeSlideExit,
-              exitActive: styles.fadeSlideExitActive,
+        {/* Общая кнопка назад для всех сценариев */}
+        {scenario !== "none" && (
+          <button
+            className={styles.backBtn}
+            onClick={() => {
+              if (scenario === "register" && showEmailForm) {
+                setShowEmailForm(false);
+              } else {
+                setScenario("none");
+              }
             }}
-            unmountOnExit
+            aria-label="Вернуться к выбору"
           >
-            <div className={styles.registerCard}>
-              <form onSubmit={(e) => onSubmit(e, "login")} noValidate>
-                <div className="mb-3">
-                  <label htmlFor="loginEmail" className="form-label">Email</label>
-                  <input
-                    id="loginEmail"
-                    className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                  {errors.email && <div className="invalid-feedback">{errors.email}</div>}
-                </div>
+            &lt;
+          </button>
+        )}
 
-                <div className="mb-3">
-                  <label htmlFor="loginPassword" className="form-label">Пароль</label>
-                  <input
-                    id="loginPassword"
-                    className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-                </div>
+        {/* Сценарий Входа */}
+        {scenario === "login" && (
+          <div className={`${styles.scenarioWrapper} login`}>
+            <h2 className="text-center mb-3">Войти</h2>
+            {errors.form && <div className="alert alert-danger">{errors.form}</div>}
+            {okMsg && <div className="alert alert-success">{okMsg}</div>}
 
-                <p className="text-end mb-3">
-                  <a href="/auth/forgot" className={styles.loginLink}>Забыли пароль?</a>
-                </p>
+            <form className={styles.formCard} onSubmit={onSubmit} noValidate>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">Email</label>
+                <input
+                  id="email"
+                  className={`form-control ${errors.email ? "is-invalid" : ""}`}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+              </div>
 
-                <button
-                  className={`${styles.registerBtn} ${styles.submitBtn} w-100`}
-                  type="submit"
-                  disabled={submitting}
+              <div className="mb-3 position-relative">
+                <label htmlFor="password" className="form-label">Пароль</label>
+                <input
+                  id="password"
+                  className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <span
+                  className={styles.showPassIcon}
+                  onClick={() => setShowPassword(!showPassword)}
                 >
-                  {submitting ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" />
-                      Входим…
-                    </>
-                  ) : (
-                    "Войти"
-                  )}
-                </button>
-              </form>
-            </div>
-          </CSSTransition>
+                  <Image
+                    src={showPassword ? "/images/eye1.png" : "/images/eye.png"}
+                    alt="Показать пароль"
+                    width={16}
+                    height={16}
+                  />
+                </span>
+                {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+              </div>
 
-          {/* Раздел Создать аккаунт */}
-          {!showLoginForm && (
-            <p className="mt-2 text-center">Создать аккаунт</p>
-          )}
+              <p className={styles.forgotPass}>Забыли пароль?</p>
 
-          {(!showLoginForm || showRegisterForm) && (
-            <>
-              {/* Кнопка Email регистрации */}
               <button
-                className={`${styles.registerBtn} ${styles.emailBtn}`}
-                onClick={() => setShowRegisterForm((prev) => !prev)}
+                type="submit"
+                className={`${styles.mainBtn} ${styles.loginBtn} w-100`}
+                disabled={submitting}
               >
-                <FaEnvelope /> Регистрация по Email
+                {submitting ? "Входим…" : "Войти"}
               </button>
+            </form>
+          </div>
+        )}
 
+        {/* Сценарий Регистрации */}
+        {scenario === "register" && (
+          <div className={styles.scenarioWrapper}>
+            <h2 className="text-center mb-3">Создать аккаунт</h2>
+
+            {!showEmailForm && (
+              <div className="d-flex flex-column align-items-center gap-3">
+                <button
+                  className={`${styles.mainBtn} ${styles.emailBtn}`}
+                  onClick={() => setShowEmailForm(true)}
+                >
+                  <FaEnvelope /> Регистрация по Email
+                </button>
+
+                <a
+                  className={`${styles.mainBtn} ${styles.googleBtn}`}
+                  href={`${API_BASE}/oauth2/authorization/google`}
+                >
+                  <FaGoogle /> Войти через Google
+                </a>
+
+                <a
+                  className={`${styles.mainBtn} ${styles.facebookBtn}`}
+                  href={`${API_BASE}/oauth2/authorization/facebook`}
+                >
+                  <FaFacebookF /> Войти через Facebook
+                </a>
+              </div>
+            )}
+
+            {/* Сценарий Регистрация по Email */}
+            {showEmailForm && (
               <CSSTransition
-                in={showRegisterForm}
+                in={showEmailForm}
                 timeout={300}
                 classNames={{
                   enter: styles.fadeSlideEnter,
@@ -192,86 +225,63 @@ export default function AuthPage() {
                 }}
                 unmountOnExit
               >
-                <div className={styles.registerCard}>
-                  <form onSubmit={(e) => onSubmit(e, "register")} noValidate>
-                    <div className="mb-3">
-                      <label htmlFor="regEmail" className="form-label">Email</label>
-                      <input
-                        id="regEmail"
-                        className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                      {errors.email && <div className="invalid-feedback">{errors.email}</div>}
-                    </div>
+                <form className={`${styles.formCard} register`} onSubmit={onSubmit} noValidate>
+                  <div className="mb-3">
+                    <label htmlFor="reg-email" className="form-label">Email</label>
+                    <input
+                      id="reg-email"
+                      className={`form-control ${errors.email ? "is-invalid" : ""}`}
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+                  </div>
 
-                    <div className="mb-3">
-                      <label htmlFor="regPassword" className="form-label">Пароль</label>
-                      <input
-                        id="regPassword"
-                        className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        minLength={8}
-                      />
-                      <div className="form-text">Минимум 8 символов, буквы и цифры.</div>
-                      {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-                    </div>
-
-                    <div className="mb-4">
-                      <label htmlFor="regConfirm" className="form-label">Подтверждение пароля</label>
-                      <input
-                        id="regConfirm"
-                        className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
-                        type="password"
-                        value={confirm}
-                        onChange={(e) => setConfirm(e.target.value)}
-                        required
-                      />
-                      {errors.confirmPassword && (
-                        <div className="invalid-feedback">{errors.confirmPassword}</div>
-                      )}
-                    </div>
-
-                    <button
-                      className={`${styles.registerBtn} ${styles.submitBtn} w-100`}
-                      type="submit"
-                      disabled={submitting}
+                  <div className="mb-3 position-relative">
+                    <label htmlFor="reg-password" className="form-label">Пароль</label>
+                    <input
+                      id="reg-password"
+                      className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <span
+                      className={styles.showPassIcon}
+                      onClick={() => setShowPassword(!showPassword)}
                     >
-                      {submitting ? (
-                        <>
-                          <span className="spinner-border spinner-border-sm me-2" />
-                          Регистрируем…
-                        </>
-                      ) : (
-                        "Зарегистрироваться"
-                      )}
-                    </button>
-                  </form>
-                </div>
+                      <Image
+                        src={showPassword ? "/images/eye1.png" : "/images/eye.png"}
+                        alt="Показать пароль"
+                        width={16}
+                        height={16}
+                      />
+                    </span>
+                    {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+
+                    <div className="mt-2" style={{ fontSize: "0.85rem", color: "#666" }}>
+                      Пароль должен содержать минимум 8 символов, заглавные и строчные буквы,
+                      цифры и спецсимволы.
+                    </div>
+
+                    {renderPasswordStrength(password)}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className={`${styles.mainBtn} ${styles.registerBtn} w-100`}
+                    disabled={submitting}
+                  >
+                    {submitting ? "Регистрируем…" : "Зарегистрироваться"}
+                  </button>
+                </form>
               </CSSTransition>
-
-              {/* Социальные кнопки */}
-              <a
-                className={`${styles.registerBtn} ${styles.googleBtn}`}
-                href={`${API_BASE}/oauth2/authorization/google`}
-              >
-                <FaGoogle /> Войти через Google
-              </a>
-
-              <a
-                className={`${styles.registerBtn} ${styles.facebookBtn}`}
-                href={`${API_BASE}/oauth2/authorization/facebook`}
-              >
-                <FaFacebookF /> Войти через Facebook
-              </a>
-            </>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
       <Footer />
     </>
