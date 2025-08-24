@@ -39,6 +39,7 @@
     border-color: #1877F2;
     color: #1877F2;
 }
+
 .googleBtn:hover {
     background-color: #c33c30;
     color: #fff;
@@ -110,6 +111,7 @@
 .loginLink:hover {
     text-decoration: underline;
 }
+
 /* Основной контейнер страницы auth */
 .authPage {
     font-family: "Inter", Arial, Helvetica, sans-serif;
@@ -221,28 +223,33 @@
     cursor: pointer;
 }
 
-/* Анимация появления формы */
-.fadeSlideEnter {
-    opacity: 0;
-    transform: translateY(-10px);
+/* Контейнер для поля пароля с иконкой */
+.passwordWrapper {
+    position: relative;
 }
 
-.fadeSlideEnterActive {
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 300ms ease-in-out;
+/* Поле ввода пароля с отступом для иконки */
+.passwordInput {
+    padding-right: 48px !important;
+    /* Отступ справа для иконки 32px + 16px padding */
 }
 
-.fadeSlideExit {
-    opacity: 1;
-    transform: translateY(0);
+/* Иконка показать/скрыть пароль */
+.showPassIcon {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.fadeSlideExitActive {
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 300ms ease-in-out;
-}
+/* Удаляем старые правила, которые создавали различия */
 .password-toggle-icon {
     position: absolute;
     top: 50%;
@@ -251,29 +258,4 @@
     width: 20px;
     height: 20px;
     cursor: pointer;
-}
-
-/* Общий стиль глазка внутри поля */
-.showPassIcon {
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    z-index: 2;
-    width: 16px;
-    /* фиксируем одинаковый размер для всех */
-    height: 16px;
-}
-
-/* Вход: немного меньше глазок */
-.login .showPassIcon {
-    width: 16px;
-    height: 16px;
-}
-
-/* Регистрация: такой же размер и позиция как Войти */
-.register .showPassIcon {
-    width: 16px;
-    height: 16px;
 }

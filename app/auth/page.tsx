@@ -15,6 +15,7 @@ export default function AuthPage() {
   const router = useRouter();
   const [scenario, setScenario] = useState<"none" | "login" | "register">("none");
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showLoginEmailForm, setShowLoginEmailForm] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -114,6 +115,8 @@ export default function AuthPage() {
             onClick={() => {
               if (scenario === "register" && showEmailForm) {
                 setShowEmailForm(false);
+              } else if (scenario === "login" && showLoginEmailForm) {
+                setShowLoginEmailForm(false);
               } else {
                 setScenario("none");
               }
@@ -131,69 +134,13 @@ export default function AuthPage() {
             {errors.form && <div className="alert alert-danger">{errors.form}</div>}
             {okMsg && <div className="alert alert-success">{okMsg}</div>}
 
-            <form className={styles.formCard} onSubmit={onSubmit} noValidate>
-              <div className="mb-3">
-                <label htmlFor="email" className="form-label">Email</label>
-                <input
-                  id="email"
-                  className={`form-control ${errors.email ? "is-invalid" : ""}`}
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                {errors.email && <div className="invalid-feedback">{errors.email}</div>}
-              </div>
-
-              <div className="mb-3 position-relative">
-                <label htmlFor="password" className="form-label">Пароль</label>
-                <input
-                  id="password"
-                  className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <span
-                  className={styles.showPassIcon}
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  <Image
-                    src={showPassword ? "/images/eye1.png" : "/images/eye.png"}
-                    alt="Показать пароль"
-                    width={16}
-                    height={16}
-                  />
-                </span>
-                {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-              </div>
-
-              <p className={styles.forgotPass}>Забыли пароль?</p>
-
-              <button
-                type="submit"
-                className={`${styles.mainBtn} ${styles.loginBtn} w-100`}
-                disabled={submitting}
-              >
-                {submitting ? "Входим…" : "Войти"}
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* Сценарий Регистрации */}
-        {scenario === "register" && (
-          <div className={styles.scenarioWrapper}>
-            <h2 className="text-center mb-3">Создать аккаунт</h2>
-
-            {!showEmailForm && (
+            {!showLoginEmailForm && (
               <div className="d-flex flex-column align-items-center gap-3">
                 <button
                   className={`${styles.mainBtn} ${styles.emailBtn}`}
-                  onClick={() => setShowEmailForm(true)}
+                  onClick={() => setShowLoginEmailForm(true)}
                 >
-                  <FaEnvelope /> Регистрация по Email
+                  <FaEnvelope /> Войти по Email
                 </button>
 
                 <a
@@ -208,6 +155,121 @@ export default function AuthPage() {
                   href={`${API_BASE}/oauth2/authorization/facebook`}
                 >
                   <FaFacebookF /> Войти через Facebook
+                </a>
+              </div>
+            )}
+
+            {showLoginEmailForm && (
+              <CSSTransition
+                in={showLoginEmailForm}
+                timeout={300}
+                classNames={{
+                  enter: styles.fadeSlideEnter,
+                  enterActive: styles.fadeSlideEnterActive,
+                  exit: styles.fadeSlideExit,
+                  exitActive: styles.fadeSlideExitActive,
+                }}
+                unmountOnExit
+              >
+                <div>
+                  <form className={styles.formCard} onSubmit={onSubmit} noValidate>
+                    <div className="mb-3">
+                      <label htmlFor="email" className="form-label">Email</label>
+                      <input
+                        id="email"
+                        className={`form-control ${errors.email ? "is-invalid" : ""}`}
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                      {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="password" className="form-label">Пароль</label>
+                      <div className={styles.passwordWrapper}>
+                        <input
+                          id="password"
+                          className={`form-control ${errors.password ? "is-invalid" : ""} ${styles.passwordInput}`}
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                        <span
+                          className={styles.showPassIcon}
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          <Image
+                            src={showPassword ? "/images/eye1.png" : "/images/eye.png"}
+                            alt="Показать пароль"
+                            width={32}
+                            height={32}
+                          />
+                        </span>
+                      </div>
+                      {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+                    </div>
+
+                    <p className={styles.forgotPass}>Забыли пароль?</p>
+
+                    <button
+                      type="submit"
+                      className={`${styles.mainBtn} ${styles.loginBtn} w-100`}
+                      disabled={submitting}
+                    >
+                      {submitting ? "Входим…" : "Войти"}
+                    </button>
+                  </form>
+
+                  <div className="d-flex flex-column align-items-center gap-3 mt-3">
+                    <a
+                      className={`${styles.mainBtn} ${styles.googleBtn}`}
+                      href={`${API_BASE}/oauth2/authorization/google`}
+                    >
+                      <FaGoogle /> Войти через Google
+                    </a>
+
+                    <a
+                      className={`${styles.mainBtn} ${styles.facebookBtn}`}
+                      href={`${API_BASE}/oauth2/authorization/facebook`}
+                    >
+                      <FaFacebookF /> Войти через Facebook
+                    </a>
+                  </div>
+                </div>
+              </CSSTransition>
+            )}
+          </div>
+        )}
+
+        {/* Сценарий Регистрации */}
+        {scenario === "register" && (
+          <div className={styles.scenarioWrapper}>
+            <h2 className="text-center mb-3">Создать аккаунт</h2>
+
+            {!showEmailForm && (
+              <div className="d-flex flex-column align-items-center gap-3">
+                <button
+                  className={`${styles.mainBtn} ${styles.emailBtn}`}
+                  onClick={() => setShowEmailForm(true)}
+                >
+                  <FaEnvelope /> Создать по Email
+                </button>
+
+                <a
+                  className={`${styles.mainBtn} ${styles.googleBtn}`}
+                  href={`${API_BASE}/oauth2/authorization/google`}
+                >
+                  <FaGoogle /> Создать через Google
+                </a>
+
+                <a
+                  className={`${styles.mainBtn} ${styles.facebookBtn}`}
+                  href={`${API_BASE}/oauth2/authorization/facebook`}
+                >
+                  <FaFacebookF /> Создать через Facebook
                 </a>
               </div>
             )}
@@ -239,27 +301,29 @@ export default function AuthPage() {
                     {errors.email && <div className="invalid-feedback">{errors.email}</div>}
                   </div>
 
-                  <div className="mb-3 position-relative">
+                  <div className="mb-3">
                     <label htmlFor="reg-password" className="form-label">Пароль</label>
-                    <input
-                      id="reg-password"
-                      className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                    <span
-                      className={styles.showPassIcon}
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      <Image
-                        src={showPassword ? "/images/eye1.png" : "/images/eye.png"}
-                        alt="Показать пароль"
-                        width={16}
-                        height={16}
+                    <div className={styles.passwordWrapper}>
+                      <input
+                        id="reg-password"
+                        className={`form-control ${errors.password ? "is-invalid" : ""} ${styles.passwordInput}`}
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                       />
-                    </span>
+                      <span
+                        className={styles.showPassIcon}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        <Image
+                          src={showPassword ? "/images/eye1.png" : "/images/eye.png"}
+                          alt="Показать пароль"
+                          width={32}
+                          height={32}
+                        />
+                      </span>
+                    </div>
                     {errors.password && <div className="invalid-feedback">{errors.password}</div>}
 
                     <div className="mt-2" style={{ fontSize: "0.85rem", color: "#666" }}>
