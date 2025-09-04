@@ -28,7 +28,6 @@
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
 }
 
-
 /* Цвета кнопок */
 .googleBtn {
     border-color: #DB4437;
@@ -38,16 +37,6 @@
 .facebookBtn {
     border-color: #1877F2;
     color: #1877F2;
-}
-
-.googleBtn:hover {
-    background-color: #c33c30;
-    color: #fff;
-}
-
-.facebookBtn:hover {
-    background-color: #155db6;
-    color: #fff;
 }
 
 .emailBtn {
@@ -112,12 +101,13 @@
     text-decoration: underline;
 }
 
-/* Основной контейнер страницы auth */
+/* Основной контейнер страницы auth - УБИРАЕМ КОНФЛИКТУЮЩИЕ СТИЛИ */
 .authPage {
     font-family: "Inter", Arial, Helvetica, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Убрали min-height: 100vh и flex: 1 для container */
 }
 
 /* Общие кнопки */
@@ -135,20 +125,11 @@
     text-decoration: none;
 }
 
-.mainBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
-}
-
 /* Цвет кнопок */
 .loginBtn {
     background-color: #0683f5;
     color: #fff;
     border-color: #0683f5;
-}
-
-.loginBtn:hover {
-    background-color: #0566cc;
 }
 
 .registerBtn {
@@ -157,8 +138,17 @@
     border-color: #01346e;
 }
 
-.registerBtn:hover {
-    background-color: #c2e0f2;
+.registerBtn:hover,
+.googleBtn:hover,
+.facebookBtn:hover,
+.loginBtn:hover,
+.mainBtn:hover,
+.googleBtn:hover,
+.facebookBtn:hover,
+.emailBtn:hover,
+.phoneBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
 }
 
 .googleBtn {
@@ -166,19 +156,9 @@
     color: #DB4437;
 }
 
-.googleBtn:hover {
-    background-color: #c33c30;
-    color: #fff;
-}
-
 .facebookBtn {
     border-color: #1877F2;
     color: #1877F2;
-}
-
-.facebookBtn:hover {
-    background-color: #155db6;
-    color: #fff;
 }
 
 /* Карточка формы */
@@ -249,7 +229,6 @@
     justify-content: center;
 }
 
-/* Удаляем старые правила, которые создавали различия */
 .password-toggle-icon {
     position: absolute;
     top: 50%;
@@ -259,3 +238,14 @@
     height: 20px;
     cursor: pointer;
 }
+
+.phoneBtn {
+    background-color: #e6f7ff;
+    color: #28a745;
+    border: 2px solid #28a745;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+

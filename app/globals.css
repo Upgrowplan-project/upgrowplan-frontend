@@ -18,6 +18,9 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .contact-btn {
@@ -37,7 +40,6 @@ body {
   background-color: #d7ecf6 !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
-
 
 /* Цвета кнопок */
 .contact-btn.telegram {
@@ -84,6 +86,7 @@ body {
     opacity: 1;
   }
 }
+
 /* Основной фирменный цвет текста (заголовков) */
 .text-brand {
   color: #1e6078;
@@ -123,17 +126,26 @@ textarea,
 button {
   font-family: inherit;
 }
+
 /* Убираем рамку у меню-бургера в мобильной версии */
 @media (max-width: 767px) {
   .navbar-toggler {
     border: none !important;
     box-shadow: none !important;
     padding: 0.25rem 0.5rem;
-    /* можно чуть уменьшить отступы, если надо */
   }
 
   .navbar-toggler:focus {
     outline: none !important;
     box-shadow: none !important;
   }
+}
+
+/* Main занимает всё доступное пространство, футер прижимается к низу */
+main {
+  flex: 1;
+}
+
+footer {
+  flex-shrink: 0;
 }

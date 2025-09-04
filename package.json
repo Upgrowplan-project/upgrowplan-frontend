@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "aos": "^2.3.4",
+    "axios": "^1.11.0",
     "bootstrap": "^5.3.7",
     "bootstrap-icons": "^1.13.1",
+    "debug": "^4.4.1",
     "next": "13.4.13",
     "next-sitemap": "^4.2.3",
     "react": "18.2.0",
@@ -24,6 +26,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "supports-color": "^10.2.0",
     "typescript": "^5"
   }
 }

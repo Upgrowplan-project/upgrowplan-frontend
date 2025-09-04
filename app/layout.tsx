@@ -1,12 +1,13 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import './globals.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'aos/dist/aos.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import "./globals.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "aos/dist/aos.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-import AOSWrapper from './AOSWrapper';
+import AOSWrapper from "./AOSWrapper";
+import Footer from "@/components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,7 +17,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title:
     "Upgrowplan | Бизнес-планы, Финансовые модели, Аналитика | Business-plans, Financial mdels, Analytics, Market research",
-  description: "UpGrowPlan: future planning service",
+  description: "Upgrowplan: future planning service",
   icons: {
     icon: "/favicon.ico",
   },
@@ -33,7 +34,10 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <AOSWrapper />
-      <body className={`${inter.variable} antialiased`}>{children}</body>
+      <body className={`${inter.variable} antialiased`}>
+        <main>{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }
