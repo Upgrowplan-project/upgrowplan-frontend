@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*", // все запросы на /api/...
-        destination: "http://localhost:9090/api/:path*", // твой бэкенд
+        destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/:path*`,
       },
     ];
   },
