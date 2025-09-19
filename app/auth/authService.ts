@@ -58,33 +58,39 @@ export async function registerByPhone(phone: string, password: string) {
   );
 }
 
-/*export async function verifyEmailCode(email: string, code: string) {
-  return handleRequest(
-    axios.post(`${API_BASE}/auth/verify-email`, { email, code })
-  );
-}*/
-
-/*export async function verifySmsCode(phone: string, code: string) {
-  return handleRequest(
-    axios.post(`${API_BASE}/auth/verify-phone`, { phone, code })
-  );
-}
-
-// --- новый метод для отправки email-кода ---
-export async function sendEmailCode(email: string) {
-  return handleRequest(
-    axios.post(`${API_BASE}/auth/send-email-code`, { email })
-  );
-}*/
 
 // --- методы для работы с профилем пользователя ---
 export interface UserProfile {
   id: string;
-  email?: string;
-  phone?: string;
-  name?: string;
+  fullname: string;
+  email: string;
   avatarUrl?: string;
+  balance?: number;
+  tokens?: number;
+  isActive?: boolean;
+  createdAt?: string;
+  lastLoginAt?: string;
+
+  // расширенные поля
+  userType?: "INDIVIDUAL" | "LEGAL"; // Физ / Юр лицо
+  role?: "USER" | "ADMIN";           // статус
+  phone?: string;                    // телефон
+  country?: string;                  // страна
+
+  // юридические данные
+  companyName?: string;
+  companyTaxId?: string;
+  inn?: string;
+  kpp?: string;
+  ogrn?: string;
+  legalAddress?: string;
+  bankName?: string;
+  bik?: string;
+  accountNumber?: string;
+  correspondentAccount?: string;
 }
+
+
 
 export async function getUserProfile(): Promise<UserProfile> {
   const token = localStorage.getItem("token");
@@ -105,8 +111,28 @@ export async function getUserProfile(): Promise<UserProfile> {
 
 
 export async function updateUserProfile(profile: Partial<UserProfile>) {
-  return handleRequest(axios.put(`${API_BASE}/users/me`, profile));
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Токен не найден");
+  }
+
+  console.log("📤 Отправляем профиль на сервер:", profile);
+
+  try {
+    const response = await axios.put(`${API_BASE}/users/me`, profile, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("📥 Ответ от сервера:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Ошибка при обновлении профиля:", error);
+    throw error;
+  }
 }
+
 
 // --- метод для загрузки аватара (эндпоинт пока условный, нужно добавить на бэке) ---
 export async function uploadAvatar(file: File): Promise<{ avatarUrl: string }> {
@@ -119,3 +145,36 @@ export async function uploadAvatar(file: File): Promise<{ avatarUrl: string }> {
     })
   );
 }
+
+export const logout = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    await axios.post(`${API_BASE}/auth/logout`, {}, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    localStorage.removeItem("token"); // удаляем токен
+  } catch (err) {
+    console.error("Ошибка при выходе", err);
+    throw err;
+  }
+};
+
+
+export const deleteAccount = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    await axios.delete(`${API_BASE}/auth/delete`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    localStorage.removeItem("token");
+  } catch (err) {
+    console.error("Ошибка при удалении аккаунта", err);
+    throw err;
+  }
+};
+
+

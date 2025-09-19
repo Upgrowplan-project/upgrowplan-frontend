@@ -1,8 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
   return (
     <footer className="bg-light py-4">
       <div className="container d-flex justify-content-between align-items-center small flex-wrap">
@@ -53,6 +61,17 @@ export default function Footer() {
               style={{ textDecoration: "none", color: "#0785f6" }}
             >
               Контакты
+            </Link>
+          </li>
+          <li className="list-inline-item">
+            <Link
+              href={isLoggedIn ? "/account" : "/auth"}
+              style={{
+                textDecoration: "none",
+                color: "#0785f6",
+              }}
+            >
+              {isLoggedIn ? "Аккаунт" : "Войти"}
             </Link>
           </li>
         </ul>
