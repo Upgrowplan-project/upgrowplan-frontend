@@ -27,6 +27,7 @@ export async function login(email: string, password: string): Promise<JwtRespons
       axios.post(`${API_BASE}/auth/login`, { email, password })
     );
     console.log("Login response:", res);
+    localStorage.setItem("token", res.token);
     return res;
   } catch (err: any) {
     console.error("Login error:", err.message || err);
@@ -44,6 +45,8 @@ export async function registerByEmail(email: string, password: string): Promise<
       axios.post(`${API_BASE}/auth/register`, payload)
     );
     console.log("Register response:", response);
+
+    localStorage.setItem("token", response.token);
     return response;
   } catch (error: any) {
     console.error("Register error:", error?.response?.data || error.message); 
