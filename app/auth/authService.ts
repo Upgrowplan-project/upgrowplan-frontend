@@ -101,7 +101,9 @@ export async function getUserProfile(): Promise<UserProfile> {
   if (!token) {
     throw new Error("Токен не найден");
   }
-
+  console.log(API_BASE)
+  console.log("Токен пользователя:", token);
+  
   return handleRequest(
     axios.get(`${API_BASE}/users/me`, {
       headers: {
