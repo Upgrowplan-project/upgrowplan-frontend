@@ -20,7 +20,13 @@ export default function BlogPage() {
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`)
       .then((res) => res.json())
-      .then((data) => setPosts(data))
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setPosts(data);
+        } else {
+          console.error("Ответ API не массив:", data);
+        }
+      })
       .catch((err) => console.error("Error fetching posts:", err));
 
     const socket = new SockJS(
@@ -45,7 +51,7 @@ export default function BlogPage() {
     <div className="blog-page d-flex flex-column min-vh-100">
       <Header />
 
-      <main className="flex-grow-1 container my-5">
+      <main className="blog-page py-5">
         <h1 className="text-brand mb-4">Блог</h1>
 
         <p
@@ -108,7 +114,7 @@ export default function BlogPage() {
                   <div className="d-flex flex-column flex-md-row align-items-start">
                     {post.mediaUrl && (
                       <img
-                        src={`http://localhost:8082/api/posts/proxy-image?fileId=${post.mediaUrl}`}
+                        src={`${process.env.NEXT_PUBLIC_BLOG_API_BASE_URL}/api/posts/proxy-image?fileId=${post.mediaUrl}`}
                         alt="Post media"
                         className="post-image"
                         style={{
