@@ -18,7 +18,7 @@ export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/posts`)
+    fetch(`${process.env.NEXT_PUBLIC_BLOG_API_BASE_URL}/api/posts`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -29,9 +29,10 @@ export default function BlogPage() {
       })
       .catch((err) => console.error("Error fetching posts:", err));
 
-    const socket = new SockJS(
-      `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/posts`
+    const socket = new WebSocket(
+      `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/posts/info`
     );
+
     const stompClient = StompJS.Stomp.over(socket);
 
     stompClient.connect({}, () => {
