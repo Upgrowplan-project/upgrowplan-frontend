@@ -10,8 +10,6 @@
   }
 }
 
-
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -150,4 +148,114 @@ main {
 
 footer {
   flex-shrink: 0;
+}
+
+/* -------------------------- */
+/*     BLOG PAGE STYLING     */
+/* -------------------------- */
+
+/* ===== Стили только для страницы блога ===== */
+
+.blog-page {
+  background-color: #f8f9fb;
+  min-height: 100vh;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Обтекание текста вокруг фото */
+.blog-post {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  max-width: 65%;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+/* Фото слева, текст обтекает справа */
+.post-image {
+  float: left;
+  width: 40%;
+  max-width: 300px;
+  margin: 0 1.5rem 1rem 0;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* Чтобы текст не прижимался к краям */
+.card-body {
+  overflow: hidden;
+}
+
+/* При ховере – лёгкий подъём */
+.blog-post:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* На мобильных – фото сверху, текст ниже */
+@media (max-width: 767px) {
+  .post-image {
+    float: none;
+    display: block;
+    width: 100%;
+    margin: 0 0 1rem 0;
+  }
+
+  .blog-post {
+    max-width: 95%;
+    padding: 1rem;
+  }
+}
+
+
+
+
+.blog-post:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Desktop layout */
+@media (min-width: 768px) {
+  .blog-post {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .post-image {
+    width: 40%;
+    max-height: none;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-right: 1px solid #eee;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+    width: 60%;
+  }
+}
+
+/* Mobile layout */
+@media (max-width: 767px) {
+  .blog-post {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .post-image {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .card-body {
+    padding: 1rem 1.25rem;
+  }
 }
