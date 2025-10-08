@@ -12,8 +12,8 @@ const WS_BASE_URL = isDev
 
 const nextConfig = {
   env: {
-    NEXT_PUBLIC_API_BASE_URL: API_BASE_URL,
-    NEXT_PUBLIC_WS_BASE_URL: WS_BASE_URL,
+    NEXT_PUBLIC_API_BLOG_URL: API_BASE_URL,
+    NEXT_PUBLIC_WS_BLOG_URL: WS_BASE_URL,
   },
   async rewrites() {
     return [

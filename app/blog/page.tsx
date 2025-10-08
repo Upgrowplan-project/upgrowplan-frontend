@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import * as StompJS from "@stomp/stompjs";
-import SockJS from "sockjs-client";
 
 interface Post {
   id: number;
@@ -18,7 +16,7 @@ export default function BlogPage() {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BLOG_API_BASE_URL}/api/posts`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BLOG_URL}/api/posts`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -30,7 +28,7 @@ export default function BlogPage() {
       .catch((err) => console.error("Error fetching posts:", err));
 
     const socket = new WebSocket(
-      `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/posts/info`
+      `${process.env.NEXT_PUBLIC_WS_BLOG_URL}/ws/posts/info`
     );
 
     const stompClient = StompJS.Stomp.over(socket);
@@ -115,7 +113,7 @@ export default function BlogPage() {
                   <div className="d-flex flex-column flex-md-row align-items-start">
                     {post.mediaUrl && (
                       <img
-                        src={`${process.env.NEXT_PUBLIC_BLOG_API_BASE_URL}/api/posts/proxy-image?fileId=${post.mediaUrl}`}
+                        src={`${process.env.NEXT_PUBLIC_API_BLOG_URL}/api/posts/proxy-image?fileId=${post.mediaUrl}`}
                         alt="Post media"
                         className="post-image"
                         style={{
