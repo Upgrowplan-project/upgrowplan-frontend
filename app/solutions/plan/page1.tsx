@@ -10,6 +10,8 @@ import {
   Form,
   Badge,
   Spinner,
+  Popover,
+  OverlayTrigger,
 } from "react-bootstrap";
 import {
   FiUpload,
