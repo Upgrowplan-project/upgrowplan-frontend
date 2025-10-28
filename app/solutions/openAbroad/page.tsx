@@ -147,7 +147,7 @@ export default function OpenAbroadPage() {
 
     // AI-валидация типа бизнеса через OpenAI
     try {
-      const validationResponse = await fetch(`${API_URL}/api/validate-business-type`, {
+      const validationResponse = await fetch(`${API_URL}/openabroad/api/validate-business-type`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -189,7 +189,7 @@ export default function OpenAbroadPage() {
 
     // 🔌 REAL API MODE - реальный запрос к бэкенду
     try {
-      const response = await fetch(`${API_URL}/api/business-info`, {
+      const response = await fetch(`${API_URL}/openabroad/api/business-info`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

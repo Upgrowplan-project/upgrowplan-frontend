@@ -6,7 +6,7 @@ export const useClickAnalytics = () => {
       // Use environment variable for API URL (works for both local and production)
       const apiUrl = process.env.NEXT_PUBLIC_SOLUTIONS_API_URL || "http://localhost:8002";
 
-      await fetch(`${apiUrl}/api/track-click`, {
+      await fetch(`${apiUrl}/click-analytics/api/track-click`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
