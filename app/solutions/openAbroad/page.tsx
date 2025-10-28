@@ -127,8 +127,10 @@ export default function OpenAbroadPage() {
   const [error, setError] = useState<string | null>(null);
   const [showLocalCurrency, setShowLocalCurrency] = useState(true);
 
-  // Замените на URL вашего бэкенда
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
+  // API URL from environment variables
+  // Development: uses http://localhost:8001 (local backend)
+  // Production: set NEXT_PUBLIC_OPENABROAD_API_URL in Vercel environment variables
+  const API_URL = process.env.NEXT_PUBLIC_OPENABROAD_API_URL || "http://localhost:8001";
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

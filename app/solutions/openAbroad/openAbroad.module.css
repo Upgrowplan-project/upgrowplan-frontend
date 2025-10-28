@@ -3,7 +3,7 @@
 .container {
   min-height: 100vh;
   padding: 0;
-  background-color: #f8f9fb;
+  background-color: #f8f9fa; /* Match solutions page */
 }
 
 /* Hero Section */
@@ -17,11 +17,12 @@
   font-size: 2.5rem;
   margin-bottom: 1rem;
   font-weight: 700;
+  color: #1e6078; /* Match solutions page heading color */
 }
 
 .heroDescription {
   font-size: 1.1rem;
-  color: #666;
+  color: #0785f6; /* Match solutions page accent color */
   max-width: 600px;
   margin: 0 auto;
 }
@@ -177,7 +178,7 @@
 }
 
 .resultsHeader {
-  background: linear-gradient(135deg, #7ed56f 0%, #28b485 100%);
+  background: linear-gradient(135deg, #1e6078 0%, #0785f6 100%); /* Match solutions page colors */
   color: white;
   padding: 1.5rem 2rem;
 }
@@ -229,7 +230,7 @@
 .infoValue {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #28b485;
+  color: #1e6078; /* Match solutions page primary */
 }
 
 .infoLink {
@@ -238,7 +239,7 @@
   justify-content: center;
   width: 18px;
   height: 18px;
-  background: #28b485;
+  background: #0785f6; /* Match solutions page accent */
   color: white;
   border-radius: 50%;
   text-decoration: none;
@@ -249,7 +250,7 @@
 }
 
 .infoLink:hover {
-  background: #1e8566;
+  background: #1e6078; /* Match solutions page primary */
   transform: scale(1.1);
 }
 
@@ -299,13 +300,13 @@
 }
 
 .currencyToggle button:hover {
-  border-color: #28b485;
+  border-color: #0785f6; /* Match solutions page accent */
 }
 
 .currencyToggle button.active {
-  background: #28b485;
+  background: #0785f6; /* Match solutions page accent */
   color: white;
-  border-color: #28b485;
+  border-color: #0785f6;
 }
 
 /* Documents List */
@@ -355,7 +356,7 @@
 .taxItem {
   text-align: center;
   padding: 1rem;
-  background: #f8f9fb;
+  background: #f8f9fa; /* Match solutions page background */
   border-radius: 8px;
   transition: all 0.3s ease;
 }
@@ -374,7 +375,7 @@
 
 .taxItem strong {
   font-size: 1.25rem;
-  color: #28b485;
+  color: #1e6078; /* Match solutions page primary */
   font-weight: 600;
 }
 
@@ -388,7 +389,7 @@
 
 .rentItem {
   padding: 1rem;
-  background: #f8f9fb;
+  background: #f8f9fa; /* Match solutions page background */
   border-radius: 8px;
   text-align: center;
   transition: all 0.3s ease;
@@ -430,7 +431,7 @@
 .resetSection {
   text-align: center;
   padding: 1.5rem 2rem;
-  background: #f8f9fb;
+  background: #f8f9fa; /* Match solutions page background */
   border-top: 1px solid #e0e0e0;
 }
 
