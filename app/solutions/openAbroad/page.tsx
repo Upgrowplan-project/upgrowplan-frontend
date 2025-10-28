@@ -36,9 +36,8 @@ interface ValidationResponse {
   message: string;
 }
 
-// 🎭 РЕЖИМ MOCK - установите true для тестирования без бэкенда
-// Автоматически включается если NEXT_PUBLIC_OPENABROAD_API_URL не установлен
-const USE_MOCK_DATA = !process.env.NEXT_PUBLIC_OPENABROAD_API_URL;
+// Always use real API in production
+const USE_MOCK_DATA = false;
 
 // Страны без индекса экономической свободы
 const COUNTRIES_WITHOUT_INDEX = [
@@ -232,18 +231,11 @@ export default function OpenAbroadPage() {
   return (
     <main className={styles.container}>
       <Header />
-      {/* Mock Mode Indicator */}
-      {USE_MOCK_DATA && (
-        <div className={styles.mockBanner}>
-          🎭 Режим тестирования (mock data) • Для работы с реальным API
-          установите USE_MOCK_DATA = false
-        </div>
-      )}
 
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <h1 className="text-brand">🌍 Открыть бизнес за рубежом</h1>
+          <h1 className="text-brand">Открыть бизнес за рубежом</h1>
           <p className={styles.heroDescription}>
             Получите точную информацию об открытии бизнеса в любой стране мира
           </p>
