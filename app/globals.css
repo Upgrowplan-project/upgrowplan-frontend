@@ -144,6 +144,8 @@ button {
 /* Main занимает всё доступное пространство, футер прижимается к низу */
 main {
   flex: 1;
+  padding: 0;
+  margin: 0;
 }
 
 footer {
@@ -259,3 +261,4 @@ footer {
     padding: 1rem 1.25rem;
   }
 }
+

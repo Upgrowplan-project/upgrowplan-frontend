@@ -14,10 +14,10 @@ export default function Header() {
   }, []);
 
   return (
-    <header>
+    <header style={{ position: "sticky", top: 0, zIndex: 1000, margin: 0 }}>
       <nav
         className="navbar navbar-expand-md navbar-light"
-        style={{ backgroundColor: "#d7ecf6" }}
+        style={{ backgroundColor: "#d7ecf6", margin: 0, padding: "0.5rem 0" }}
       >
         <div className="container">
           <Link href="/" className="navbar-brand d-flex align-items-center">

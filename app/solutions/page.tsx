@@ -1,13 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { Card } from "react-bootstrap";
 import Link from "next/link";
-import { FiCpu, FiBarChart2, FiUsers, FiFileText } from "react-icons/fi";
+import { FiCpu, FiBarChart2, FiUsers, FiFileText, FiMapPin } from "react-icons/fi";
+import { useClickAnalytics } from "../../hooks/useClickAnalytics";
 import { FaHourglassHalf } from "react-icons/fa";
 import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 export default function SolutionsPage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -41,7 +40,16 @@ export default function SolutionsPage() {
       icon: <FiFileText className="me-2 text-danger" />,
       release: "осень 2025",
     },
+    {
+      title: "Relocation Service",
+      description:
+        "Сервис предоставляет условия открытия/релокации бизнеса в любой стране",
+      icon: <FiMapPin className="me-2 text-info" />,
+      link: "/solutions/openAbroad",
+      elementId: "relocation-service-card",
+    },
   ];
+  const { trackClick } = useClickAnalytics();
 
   return (
     <div style={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
@@ -107,6 +115,12 @@ export default function SolutionsPage() {
                         href={solution.link}
                         className="btn btn-primary w-100"
                         style={{ minWidth: "150px" }}
+                        onClick={() =>
+                          trackClick(
+                            solution.elementId || (solution.title ?? "unknown"),
+                            "card"
+                          )
+                        }
                       >
                         Открыть
                       </Link>

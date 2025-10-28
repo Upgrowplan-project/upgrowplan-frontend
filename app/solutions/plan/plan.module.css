@@ -1,0 +1,145 @@
+/* ========================= */
+/*    PLAN PAGE STYLING      */
+/* ========================= */
+
+.planPage {
+  background-color: #f8f9fb;
+  min-height: 100vh;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* ========================= */
+/*    INITIAL SCREEN         */
+/* ========================= */
+
+.modeCard {
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modeCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
+}
+
+.modeCardBody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.modeCardContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.modeCardContent h4,
+.modeCardContent p,
+.modeCardContent ul {
+  width: 100%;
+}
+
+.modeCardContent button {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* ========================= */
+/*       CHAT STYLING        */
+/* ========================= */
+
+.chatBody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: #e0f7ff;
+  border-radius: 16px;
+}
+
+.chatMessage {
+  max-width: 75%;
+  word-break: break-word;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  color: #000;
+}
+
+.chatMessage.user {
+  align-self: flex-end;
+  background-color: #d4edda;
+  /* салатовый/светло-зеленый */
+  color: #171717;
+}
+
+.chatMessage.system,
+.chatMessage.question {
+  align-self: flex-start;
+  background-color: #ffffff;
+  color: #171717;
+}
+
+.chatMessage .filePreview {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #f0f0f0;
+  padding: 0.2rem 0.4rem;
+  border-radius: 12px;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.chatMessage .filePreview:hover {
+  background-color: #d0d0d0;
+}
+
+.userInputArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.userInputRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.userInputRow input {
+  flex: 1;
+}
+
+.userDataPanel {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-size: 0.9rem;
+}
+
+.userDataPanel h5 {
+  margin-bottom: 0.75rem;
+  color: #1e6078;
+}
+
+/* Мобильные устройства */
+@media (max-width: 767px) {
+  .chatMessage {
+    width: 100%;
+  }
+}
