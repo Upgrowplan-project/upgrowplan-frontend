@@ -37,7 +37,8 @@ interface ValidationResponse {
 }
 
 // 🎭 РЕЖИМ MOCK - установите true для тестирования без бэкенда
-const USE_MOCK_DATA = false;
+// Автоматически включается если NEXT_PUBLIC_OPENABROAD_API_URL не установлен
+const USE_MOCK_DATA = !process.env.NEXT_PUBLIC_OPENABROAD_API_URL;
 
 // Страны без индекса экономической свободы
 const COUNTRIES_WITHOUT_INDEX = [
