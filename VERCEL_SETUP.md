@@ -24,15 +24,17 @@ http://localhost:8002
 
 ---
 
-### 2. OpenAbroad API
+### 2. OpenAbroad API (Optional - uses mock data if not set)
 
 **Variable Name**: `NEXT_PUBLIC_OPENABROAD_API_URL`
 
-**Value (Production)**:
+**Status**: ⚠️ **Optional** - OpenAbroad automatically uses mock data when this variable is not set
+
+**Value (Production)** - if you deploy OpenAbroad separately:
 ```
 https://openabroad-backend.herokuapp.com
 ```
-*Note: You need to deploy OpenAbroad service separately or use a separate Heroku app*
+*Note: OpenAbroad service is not yet deployed. Page works in mock mode without this variable.*
 
 **Value (Local Development)**:
 ```
@@ -41,6 +43,12 @@ http://localhost:8001
 
 **Used by**:
 - `app/solutions/openAbroad/page.tsx` - business relocation page
+
+**Mock Mode**:
+- Automatically enabled when `NEXT_PUBLIC_OPENABROAD_API_URL` is not set
+- Provides test data for UI/UX demonstration
+- Shows banner: "🎭 Режим тестирования (mock data)"
+- To use real API: deploy OpenAbroad service and set this variable
 
 ---
 
@@ -163,11 +171,18 @@ After adding/changing environment variables, you MUST:
 
 ## Next Steps
 
+### Required (for Click Analytics to work):
 1. ✅ Add `NEXT_PUBLIC_SOLUTIONS_API_URL` to Vercel
-2. ⚠️ Deploy OpenAbroad service to Heroku (separate app)
-3. ⚠️ Add `NEXT_PUBLIC_OPENABROAD_API_URL` to Vercel
-4. ✅ Redeploy frontend on Vercel
-5. ✅ Test on production
+2. ✅ Redeploy frontend on Vercel
+3. ✅ Test Click Analytics on production
+
+### Optional (for OpenAbroad real API):
+4. ⚠️ Deploy OpenAbroad service to Heroku (separate app) - *currently uses mock data*
+5. ⚠️ Add `NEXT_PUBLIC_OPENABROAD_API_URL` to Vercel after deployment
+
+**Current Status**:
+- ✅ Click Analytics: Ready for production
+- ⚠️ OpenAbroad: Works in mock mode (no backend needed yet)
 
 ---
 
