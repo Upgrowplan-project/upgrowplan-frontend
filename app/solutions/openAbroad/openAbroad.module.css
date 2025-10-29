@@ -3,7 +3,7 @@
 .container {
   min-height: 100vh;
   padding: 0;
-  background-color: #f8f9fa; /* Match solutions page */
+  background-color: #d9ebf5; /* Match solutions page */
 }
 
 /* Hero Section */
@@ -20,12 +20,12 @@
   font-size: 2.5rem;
   margin-bottom: 1rem;
   font-weight: 700;
-  color: #1e6078; /* Match solutions page heading color */
+  color: #01346e; /* Match solutions page heading color */
 }
 
 .heroDescription {
   font-size: 1.1rem;
-  color: #0785f6; /* Match solutions page accent color */
+  color: #0683f5; /* Match solutions page accent color */
   max-width: 100%; /* Full width for left alignment */
   margin: 0; /* Remove auto margin */
 }
@@ -73,7 +73,7 @@
 .label {
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #1e6078;
+  color: #01346e;
   font-size: 1rem;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -89,7 +89,7 @@
 
 .input:focus {
   outline: none;
-  border-color: #1e6078;
+  border-color: #01346e;
   box-shadow: 0 0 0 3px rgba(30, 96, 120, 0.1);
 }
 
@@ -102,7 +102,7 @@
 .submitButton {
   width: 100%;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #1e6078 0%, #0785f6 100%);
+  background: #0683f5;
   color: white;
   border: none;
   border-radius: 8px;
@@ -127,12 +127,12 @@
 }
 
 .spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #ffffff;
-  border-top-color: transparent;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: spin 0.8s ease-in-out infinite;
 }
 
 @keyframes spin {
@@ -145,15 +145,59 @@
 .errorSection {
   max-width: 900px;
   margin: 0 auto 2rem;
+  animation: fadeIn 0.4s ease-in;
 }
 
 .errorAlert {
-  background: #fee;
-  border: 1px solid #fcc;
-  color: #c33;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
+  background: #ffffff;
+  border: 2px solid #ff6b6b;
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.1);
+}
+
+.errorIcon {
+  color: #ff6b6b;
+  flex-shrink: 0;
+}
+
+.errorContent {
+  flex: 1;
+}
+
+.errorTitle {
+  margin: 0 0 0.5rem 0;
+  color: #01346e;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.errorMessage {
+  margin: 0 0 1rem 0;
+  color: #666;
   font-size: 1rem;
+  line-height: 1.5;
+}
+
+.retryButton {
+  background: #0683f5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.retryButton:hover {
+  background: #01346e;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(6, 131, 245, 0.3);
 }
 
 /* Results Section */
@@ -182,9 +226,10 @@
 }
 
 .resultsHeader {
-  background: linear-gradient(135deg, #1e6078 0%, #0785f6 100%); /* Match solutions page colors */
-  color: white;
-  padding: 1.5rem 2rem;
+  background: transparent;
+  color: #01346e;
+  padding: 1.5rem 2rem 1rem 2rem;
+  border-bottom: 2px solid #e0e0e0;
 }
 
 .resultsHeader h2 {
@@ -234,7 +279,7 @@
 .infoValue {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #4ade80; /* Light green for all numbers */
+  color: #7dd36e; /* Light green for all numbers */
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -244,7 +289,7 @@
   justify-content: center;
   width: 18px;
   height: 18px;
-  background: #0785f6; /* Match solutions page accent */
+  background: #0683f5; /* Match solutions page accent */
   color: white;
   border-radius: 50%;
   text-decoration: none;
@@ -255,7 +300,7 @@
 }
 
 .infoLink:hover {
-  background: #1e6078; /* Match solutions page primary */
+  background: #01346e; /* Match solutions page primary */
   transform: scale(1.1);
 }
 
@@ -283,7 +328,7 @@
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   font-weight: 700;
-  color: #1e6078;
+  color: #01346e;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -307,13 +352,13 @@
 }
 
 .currencyToggle button:hover {
-  border-color: #0785f6; /* Match solutions page accent */
+  border-color: #0683f5; /* Match solutions page accent */
 }
 
 .currencyToggle button.active {
-  background: #0785f6; /* Match solutions page accent */
+  background: #0683f5; /* Match solutions page accent */
   color: white;
-  border-color: #0785f6;
+  border-color: #0683f5;
 }
 
 /* Documents List */
@@ -331,8 +376,8 @@
 
 /* Tax Link */
 .taxLink {
-  font-size: 0.875rem;
-  color: #28b485;
+  font-size: 0.9rem;
+  color: #0683f5;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -342,7 +387,7 @@
 }
 
 .taxLink:hover {
-  color: #1e8566;
+  color: #01346e;
   text-decoration: underline;
 }
 
@@ -350,7 +395,7 @@
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid #e0e0e0;
-  text-align: center;
+  text-align: left;
 }
 
 /* Taxes Grid */
@@ -362,29 +407,32 @@
 
 .taxItem {
   text-align: center;
-  padding: 1rem;
-  background: #f8f9fa; /* Match solutions page background */
+  padding: 1.2rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
 .taxItem:hover {
-  background: #e9ecef;
+  border-color: #0683f5;
+  box-shadow: 0 2px 8px rgba(6, 131, 245, 0.1);
   transform: translateY(-2px);
 }
 
 .taxItem small {
   display: block;
   color: #666;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .taxItem strong {
-  font-size: 1.25rem;
-  color: #4ade80; /* Light green for all numbers */
+  display: block;
+  font-size: 1.4rem;
+  color: #7dd36e;
   font-weight: 600;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 /* Rent Grid */
@@ -396,58 +444,113 @@
 }
 
 .rentItem {
-  padding: 1rem;
-  background: #f8f9fa; /* Match solutions page background */
+  padding: 1.2rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
   text-align: center;
   transition: all 0.3s ease;
 }
 
 .rentItem:hover {
-  background: #e9ecef;
+  border-color: #0683f5;
+  box-shadow: 0 2px 8px rgba(6, 131, 245, 0.1);
   transform: translateY(-2px);
 }
 
 .rentItem h4 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.75rem 0;
   font-size: 0.875rem;
   color: #666;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .rentItem p {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #28b485;
+  color: #7dd36e;
 }
 
 .rentValue {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #28b485;
+  color: #7dd36e;
 }
 
 .loanValue {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #28b485;
+  color: #7dd36e;
   margin: 0.5rem 0 0 0;
+}
+
+/* Financial Information Grid */
+.financialGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.financialItem {
+  padding: 1.2rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.financialItem:hover {
+  border-color: #0683f5;
+  box-shadow: 0 2px 8px rgba(6, 131, 245, 0.1);
+  transform: translateY(-2px);
+}
+
+.financialItem small {
+  display: block;
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.financialItem strong {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #7dd36e;
+  margin-bottom: 0.75rem;
+}
+
+.financialLink {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #0683f5;
+  text-decoration: none;
+  margin-top: 0.5rem;
+  transition: color 0.2s;
+}
+
+.financialLink:hover {
+  color: #01346e;
+  text-decoration: underline;
 }
 
 /* Reset Section */
 .resetSection {
   text-align: center;
   padding: 1.5rem 2rem;
-  background: #f8f9fa; /* Match solutions page background */
+  background: #d9ebf5; /* Match solutions page background */
   border-top: 1px solid #e0e0e0;
 }
 
 .resetButton {
   padding: 0.75rem 2rem;
   background: white;
-  color: #1e6078;
-  border: 2px solid #1e6078;
+  color: #01346e;
+  border: 2px solid #01346e;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -456,7 +559,7 @@
 }
 
 .resetButton:hover {
-  background: #1e6078;
+  background: #01346e;
   color: white;
   transform: translateY(-2px);
 }

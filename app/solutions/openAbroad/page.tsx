@@ -27,6 +27,10 @@ interface BusinessResponse {
   average_rent_retail_per_sqm: string;
   average_rent_warehouse_per_sqm: string;
   commercial_loan_rate: string;
+  deposit_rate: string;
+  central_bank_rate: string;
+  major_bank_name: string;
+  major_bank_url: string;
   economic_freedom_index: string;
 }
 
@@ -115,6 +119,10 @@ const getMockData = (
     average_rent_retail_per_sqm: "30-50",
     average_rent_warehouse_per_sqm: "8-15",
     commercial_loan_rate: "5-8%",
+    deposit_rate: "2-3%",
+    central_bank_rate: "4.5%",
+    major_bank_name: "Deutsche Bank",
+    major_bank_url: "https://www.deutschebank.de",
     economic_freedom_index: "74.8",
   };
 };
@@ -128,9 +136,10 @@ export default function OpenAbroadPage() {
   const [showLocalCurrency, setShowLocalCurrency] = useState(true);
 
   // API URL from environment variables
-  // Development: uses http://localhost:8001 (local backend)
-  // Production: set NEXT_PUBLIC_OPENABROAD_API_URL in Vercel environment variables
+  // Development: uses http://localhost:8001 (local backend without prefix)
+  // Production: uses Heroku URL with /openabroad prefix
   const API_URL = process.env.NEXT_PUBLIC_OPENABROAD_API_URL || "http://localhost:8001";
+  const API_PREFIX = process.env.NEXT_PUBLIC_OPENABROAD_API_URL ? "/openabroad" : "";
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -146,7 +155,7 @@ export default function OpenAbroadPage() {
 
     // AI-валидация типа бизнеса через OpenAI
     try {
-      const validationResponse = await fetch(`${API_URL}/openabroad/api/validate-business-type`, {
+      const validationResponse = await fetch(`${API_URL}${API_PREFIX}/api/validate-business-type`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +197,7 @@ export default function OpenAbroadPage() {
 
     // 🔌 REAL API MODE - реальный запрос к бэкенду
     try {
-      const response = await fetch(`${API_URL}/openabroad/api/business-info`, {
+      const response = await fetch(`${API_URL}${API_PREFIX}/api/business-info`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -204,18 +213,24 @@ export default function OpenAbroadPage() {
           detail: "Ошибка сервера",
         }));
         throw new Error(
-          errorData.detail || `HTTP error! status: ${response.status}`
+          errorData.detail || `Ошибка получения данных (код ${response.status})`
         );
       }
 
       const data: BusinessResponse = await response.json();
       setResult(data);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Не удалось получить данные. Проверьте подключение к серверу."
-      );
+      console.error("Ошибка запроса:", err);
+
+      let errorMessage = "Произошла ошибка при получении данных";
+
+      if (err instanceof TypeError && err.message.includes("fetch")) {
+        errorMessage = "Не удалось подключиться к серверу. Проверьте подключение к интернету.";
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -284,7 +299,7 @@ export default function OpenAbroadPage() {
                   required
                 />
                 <small className={styles.helpText}>
-                  Укажите тип вашего бизнеса
+                  Укажите подробно тип вашего бизнеса, например онлайн-школа английского языка
                 </small>
               </div>
             </div>
@@ -311,7 +326,26 @@ export default function OpenAbroadPage() {
       {error && (
         <section className={styles.errorSection}>
           <div className={styles.errorAlert}>
-            <strong>⚠️ Ошибка:</strong> {error}
+            <div className={styles.errorIcon}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <div className={styles.errorContent}>
+              <h3 className={styles.errorTitle}>Не удалось получить данные</h3>
+              <p className={styles.errorMessage}>{error}</p>
+              <button
+                onClick={() => {
+                  setError(null);
+                  handleSubmit(new Event('submit') as any);
+                }}
+                className={styles.retryButton}
+              >
+                Попробовать снова
+              </button>
+            </div>
           </div>
         </section>
       )}
@@ -388,19 +422,19 @@ export default function OpenAbroadPage() {
 
               {/* Taxes */}
               <div className={styles.section}>
-                <h3>Налоги</h3>
+                <h3>Налоги (%)</h3>
                 <div className={styles.taxesGrid}>
                   <div className={styles.taxItem}>
                     <small>НДС</small>
-                    <strong>{result.taxes.vat}</strong>
+                    <strong>{result.taxes.vat.replace('%', '')}</strong>
                   </div>
                   <div className={styles.taxItem}>
                     <small>Налог на прибыль</small>
-                    <strong>{result.taxes.profit_tax}</strong>
+                    <strong>{result.taxes.profit_tax.replace('%', '')}</strong>
                   </div>
                   <div className={styles.taxItem}>
                     <small>Налог на ФОТ</small>
-                    <strong>{result.taxes.payroll_tax}</strong>
+                    <strong>{result.taxes.payroll_tax.replace('%', '')}</strong>
                   </div>
                   <div className={styles.taxItem}>
                     <small>Прочие налоги</small>
@@ -446,10 +480,33 @@ export default function OpenAbroadPage() {
                 </div>
               </div>
 
-              {/* Loans */}
+              {/* Financial Information */}
               <div className={styles.section}>
-                <h3>Средняя ставка по коммерческим кредитам</h3>
-                <p className={styles.loanValue}>{result.commercial_loan_rate} годовых</p>
+                <h3>Финансовая информация (% годовых)</h3>
+                <div className={styles.financialGrid}>
+                  <div className={styles.financialItem}>
+                    <small>Коммерческие кредиты</small>
+                    <strong>{result.commercial_loan_rate.replace('%', '').trim()}</strong>
+                    {result.major_bank_url && (
+                      <a
+                        href={result.major_bank_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.financialLink}
+                      >
+                        {result.major_bank_name} →
+                      </a>
+                    )}
+                  </div>
+                  <div className={styles.financialItem}>
+                    <small>Ставка по депозитам</small>
+                    <strong>{result.deposit_rate ? result.deposit_rate.replace('%', '').trim() : 'Нет данных'}</strong>
+                  </div>
+                  <div className={styles.financialItem}>
+                    <small>Учетная ставка центробанка</small>
+                    <strong>{result.central_bank_rate ? result.central_bank_rate.replace('%', '').trim() : 'Нет данных'}</strong>
+                  </div>
+                </div>
               </div>
 
               {/* Economic Freedom Index */}

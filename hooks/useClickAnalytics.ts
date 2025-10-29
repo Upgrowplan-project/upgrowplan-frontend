@@ -5,8 +5,10 @@ export const useClickAnalytics = () => {
     try {
       // Use environment variable for API URL (works for both local and production)
       const apiUrl = process.env.NEXT_PUBLIC_SOLUTIONS_API_URL || "http://localhost:8002";
+      // Use prefix only in production (Heroku unified backend)
+      const apiPrefix = process.env.NEXT_PUBLIC_SOLUTIONS_API_URL ? "/click-analytics" : "";
 
-      await fetch(`${apiUrl}/click-analytics/api/track-click`, {
+      await fetch(`${apiUrl}${apiPrefix}/api/track-click`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
