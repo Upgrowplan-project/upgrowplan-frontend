@@ -153,8 +153,18 @@ export default function OpenAbroadPage() {
     setError(null);
     setResult(null);
 
+    // DEBUG: Log API configuration
+    console.log("🔍 API Configuration:", {
+      API_URL,
+      API_PREFIX,
+      fullValidationUrl: `${API_URL}${API_PREFIX}/api/validate-business-type`,
+      fullBusinessInfoUrl: `${API_URL}${API_PREFIX}/api/business-info`,
+      envVar: process.env.NEXT_PUBLIC_OPENABROAD_API_URL
+    });
+
     // AI-валидация типа бизнеса через OpenAI
     try {
+      console.log("📤 Sending validation request...");
       const validationResponse = await fetch(`${API_URL}${API_PREFIX}/api/validate-business-type`, {
         method: "POST",
         headers: {
