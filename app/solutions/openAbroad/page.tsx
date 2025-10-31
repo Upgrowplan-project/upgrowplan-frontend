@@ -18,8 +18,11 @@ interface BusinessResponse {
   registration_cost_local: string;
   registration_cost_rub: string;
   required_documents: string[];
+  required_documents_foreigner?: string[];
   remote_registration: string;
   taxes: TaxInfo;
+  taxes_simplified?: TaxInfo;
+  simplified_tax_threshold?: string;
   tax_authority_url: string;
   licensing_required: string;
   registration_period_days: string;
@@ -29,6 +32,7 @@ interface BusinessResponse {
   commercial_loan_rate: string;
   deposit_rate: string;
   central_bank_rate: string;
+  central_bank_url: string;
   major_bank_name: string;
   major_bank_url: string;
   economic_freedom_index: string;
@@ -92,8 +96,8 @@ const getMockData = (
   return {
     country: country,
     business_type: businessType,
-    currency: "EUR",
-    registration_cost_local: "500-1500",
+    currency: "BYN",
+    registration_cost_local: "1600-4800",
     registration_cost_rub: "50000-150000",
     required_documents: [
       "Паспорт гражданина",
@@ -103,6 +107,16 @@ const getMockData = (
       "Устав компании",
       "Финансовая отчетность (при наличии)",
     ],
+    required_documents_foreigner: [
+      "Заграничный паспорт",
+      "Виза или вид на жительство",
+      "Разрешение на работу",
+      "Бизнес-план проекта",
+      "Справка о несудимости из страны происхождения",
+      "Подтверждение адреса регистрации",
+      "Устав компании",
+      "Нотариально заверенный перевод документов",
+    ],
     remote_registration:
       "Частично: первичные документы можно подать онлайн, но для финальной регистрации требуется личное присутствие",
     taxes: {
@@ -111,6 +125,13 @@ const getMockData = (
       payroll_tax: "33.8%",
       other_taxes: "Местные налоги 2-3%, туристический сбор",
     },
+    taxes_simplified: {
+      vat: "0%",
+      profit_tax: "15%",
+      payroll_tax: "33.8%",
+      other_taxes: "Местные налоги 1-2%",
+    },
+    simplified_tax_threshold: "60000000",
     tax_authority_url: "https://www.financnisprava.cz",
     licensing_required:
       "Требуется: санитарная лицензия, сертификат соответствия помещения нормам пожарной безопасности, медицинские книжки для персонала",
@@ -121,6 +142,7 @@ const getMockData = (
     commercial_loan_rate: "5-8%",
     deposit_rate: "2-3%",
     central_bank_rate: "4.5%",
+    central_bank_url: "https://www.ecb.europa.eu",
     major_bank_name: "Deutsche Bank",
     major_bank_url: "https://www.deutschebank.de",
     economic_freedom_index: "74.8",
@@ -133,13 +155,93 @@ export default function OpenAbroadPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<BusinessResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [showLocalCurrency, setShowLocalCurrency] = useState(true);
+  const [displayCurrency, setDisplayCurrency] = useState<'local' | 'rub' | 'usd'>('local');
+  const [taxRegime, setTaxRegime] = useState<'general' | 'simplified'>('general');
+  const [citizenship, setCitizenship] = useState<'citizen' | 'foreigner'>('citizen');
+  const [monthlyRevenue, setMonthlyRevenue] = useState<string>('');
 
   // API URL from environment variables
   // Development: uses http://localhost:8001 (local backend without prefix)
   // Production: uses Heroku URL with /openabroad prefix
   const API_URL = process.env.NEXT_PUBLIC_OPENABROAD_API_URL || "http://localhost:8001";
   const API_PREFIX = process.env.NEXT_PUBLIC_OPENABROAD_API_URL ? "/openabroad" : "";
+
+  // Примерные курсы валют к USD (сколько единиц валюты = 1 USD)
+  const exchangeRates: { [key: string]: number } = {
+    'USD': 1,
+    'RUB': 95,      // 1 USD = 95 RUB
+    'EUR': 0.92,    // 1 USD = 0.92 EUR
+    'BYN': 3.2,     // 1 USD = 3.2 BYN
+    'BHD': 0.376,   // 1 USD = 0.376 BHD
+    'AED': 3.67,    // 1 USD = 3.67 AED (Дирхам ОАЭ)
+    'CNY': 7.2,     // 1 USD = 7.2 CNY (Юань)
+    'GBP': 0.79,    // 1 USD = 0.79 GBP (Фунт)
+    'JPY': 150,     // 1 USD = 150 JPY (Иена)
+    'KZT': 450,     // 1 USD = 450 KZT (Тенге)
+    'TRY': 34,      // 1 USD = 34 TRY (Лира)
+    // Добавьте другие валюты по необходимости
+  };
+
+  // Функция конвертации строки с числом в выбранную валюту
+  const convertCurrency = (value: string, fromCurrency: string): string => {
+    if (!value || value === 'Данные недоступны') return value;
+
+    // Если это диапазон (например "500-1500")
+    const rangeMatch = value.match(/^(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/);
+    if (rangeMatch) {
+      const min = parseFloat(rangeMatch[1]);
+      const max = parseFloat(rangeMatch[2]);
+
+      const fromRate = exchangeRates[fromCurrency.toUpperCase()] || 1;
+      const toRate = displayCurrency === 'local' ? 1 : (displayCurrency === 'rub' ? exchangeRates['RUB'] : exchangeRates['USD']);
+      const targetCurrency = displayCurrency === 'local' ? fromCurrency : (displayCurrency === 'rub' ? 'RUB' : 'USD');
+
+      const convertedMin = Math.round((min / fromRate) * toRate);
+      const convertedMax = Math.round((max / fromRate) * toRate);
+
+      return `${convertedMin}-${convertedMax}`;
+    }
+
+    // Если это одно число
+    const numberMatch = value.match(/^(\d+(?:\.\d+)?)$/);
+    if (numberMatch) {
+      const num = parseFloat(numberMatch[1]);
+      const fromRate = exchangeRates[fromCurrency.toUpperCase()] || 1;
+      const toRate = displayCurrency === 'local' ? 1 : (displayCurrency === 'rub' ? exchangeRates['RUB'] : exchangeRates['USD']);
+
+      const converted = Math.round((num / fromRate) * toRate);
+      return converted.toString();
+    }
+
+    return value;
+  };
+
+  // Получить символ валюты
+  const getCurrencySymbol = (): string => {
+    if (displayCurrency === 'rub') return '₽';
+    if (displayCurrency === 'usd') return '$';
+    return result?.currency || '';
+  };
+
+  // Получить курс обмена для отображения
+  const getExchangeRateText = (): string => {
+    if (!result) return '';
+
+    const localCurrency = result.currency.toUpperCase();
+    const localRate = exchangeRates[localCurrency] || 1;
+
+    if (displayCurrency === 'usd') {
+      // Показываем курс местной валюты к USD
+      return `1 USD = ${localRate.toFixed(2)} ${localCurrency}`;
+    } else if (displayCurrency === 'rub') {
+      // Показываем курс местной валюты к RUB через USD
+      const rubRate = exchangeRates['RUB'];
+      const crossRate = (rubRate / localRate).toFixed(2);
+      return `1 ${localCurrency} = ${crossRate} RUB`;
+    }
+
+    return ''; // Для местной валюты не показываем курс
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -371,6 +473,36 @@ export default function OpenAbroadPage() {
               </h2>
             </div>
 
+            {/* Currency Selector */}
+            <div className={styles.currencySelector}>
+              <label className={styles.currencySelectorLabel}>Валюта отчета:</label>
+              <div className={styles.currencySelectorButtons}>
+                <button
+                  onClick={() => setDisplayCurrency('local')}
+                  className={displayCurrency === 'local' ? styles.currencyButtonActive : styles.currencyButton}
+                >
+                  {result.currency} (Валюта страны)
+                </button>
+                <button
+                  onClick={() => setDisplayCurrency('rub')}
+                  className={displayCurrency === 'rub' ? styles.currencyButtonActive : styles.currencyButton}
+                >
+                  ₽ RUB (Рубль)
+                </button>
+                <button
+                  onClick={() => setDisplayCurrency('usd')}
+                  className={displayCurrency === 'usd' ? styles.currencyButtonActive : styles.currencyButton}
+                >
+                  $ USD (Доллар)
+                </button>
+              </div>
+              {getExchangeRateText() && (
+                <small className={styles.exchangeRateText}>
+                  Курс обмена: {getExchangeRateText()}
+                </small>
+              )}
+            </div>
+
             <div className={styles.resultsBody}>
               {/* Main Info Section */}
               <div className={styles.section}>
@@ -378,27 +510,9 @@ export default function OpenAbroadPage() {
                 <div className={styles.infoList}>
                   <div className={styles.infoItem}>
                     <span className={styles.infoLabel}>Стоимость регистрации:</span>
-                    <div className={styles.infoValueContainer}>
-                      <div className={styles.currencyToggle}>
-                        <button
-                          onClick={() => setShowLocalCurrency(true)}
-                          className={showLocalCurrency ? styles.active : ""}
-                        >
-                          {result.currency}
-                        </button>
-                        <button
-                          onClick={() => setShowLocalCurrency(false)}
-                          className={!showLocalCurrency ? styles.active : ""}
-                        >
-                          RUB
-                        </button>
-                      </div>
-                      <span className={styles.infoValue}>
-                        {showLocalCurrency
-                          ? `${result.registration_cost_local} ${result.currency}`
-                          : `${result.registration_cost_rub} ₽`}
-                      </span>
-                    </div>
+                    <span className={styles.infoValue}>
+                      {convertCurrency(result.registration_cost_local, result.currency)} {getCurrencySymbol()}
+                    </span>
                   </div>
 
                   <div className={styles.infoItem}>
@@ -418,8 +532,35 @@ export default function OpenAbroadPage() {
               {/* Documents and Licensing */}
               <div className={styles.section}>
                 <h3>Требуемые документы и лицензирование</h3>
+
+                {/* Citizenship Selector */}
+                {result.required_documents_foreigner && (
+                  <div className={styles.citizenshipSelector}>
+                    <label className={styles.citizenshipSelectorLabel}>
+                      Выберите ваш статус в стране {result.country}:
+                    </label>
+                    <div className={styles.citizenshipSelectorButtons}>
+                      <button
+                        onClick={() => setCitizenship('citizen')}
+                        className={citizenship === 'citizen' ? styles.citizenshipButtonActive : styles.citizenshipButton}
+                      >
+                        Гражданин
+                      </button>
+                      <button
+                        onClick={() => setCitizenship('foreigner')}
+                        className={citizenship === 'foreigner' ? styles.citizenshipButtonActive : styles.citizenshipButton}
+                      >
+                        Негражданин
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <ul className={styles.documentsList}>
-                  {result.required_documents.map((doc, index) => (
+                  {(citizenship === 'foreigner' && result.required_documents_foreigner
+                    ? result.required_documents_foreigner
+                    : result.required_documents
+                  ).map((doc, index) => (
                     <li key={index} className={styles.documentItem}>
                       {doc}
                     </li>
@@ -433,22 +574,86 @@ export default function OpenAbroadPage() {
               {/* Taxes */}
               <div className={styles.section}>
                 <h3>Налоги (%)</h3>
+
+                {/* Tax Regime Selector */}
+                {result.taxes_simplified && (
+                  <div className={styles.taxRegimeSelector}>
+                    <label className={styles.taxRegimeSelectorLabel}>Выберите возможный налоговый режим</label>
+
+                    {result.simplified_tax_threshold && (
+                      <div className={styles.revenueInputContainer}>
+                        <label className={styles.revenueInputLabel}>
+                          Ваша ежемесячная выручка ({result.currency}):
+                        </label>
+                        <input
+                          type="number"
+                          value={monthlyRevenue}
+                          onChange={(e) => setMonthlyRevenue(e.target.value)}
+                          placeholder="Введите сумму"
+                          className={styles.revenueInput}
+                        />
+                        {monthlyRevenue && (
+                          <small className={styles.revenueCalculation}>
+                            Годовая выручка: {(parseFloat(monthlyRevenue) * 12).toLocaleString()} {result.currency}
+                            {parseFloat(monthlyRevenue) * 12 <= parseFloat(result.simplified_tax_threshold) ? (
+                              <span className={styles.revenueEligible}> ✓ Вы можете применять упрощенный режим</span>
+                            ) : (
+                              <span className={styles.revenueNotEligible}> ✗ Превышен порог для упрощенного режима ({result.simplified_tax_threshold} {result.currency})</span>
+                            )}
+                          </small>
+                        )}
+                      </div>
+                    )}
+
+                    <div className={styles.taxRegimeSelectorButtons}>
+                      <button
+                        onClick={() => setTaxRegime('general')}
+                        className={taxRegime === 'general' ? styles.taxRegimeButtonActive : styles.taxRegimeButton}
+                      >
+                        Общая система
+                      </button>
+                      <button
+                        onClick={() => setTaxRegime('simplified')}
+                        className={taxRegime === 'simplified' ? styles.taxRegimeButtonActive : styles.taxRegimeButton}
+                      >
+                        Упрощенная система
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <div className={styles.taxesGrid}>
                   <div className={styles.taxItem}>
                     <small>НДС</small>
-                    <strong>{result.taxes.vat.replace('%', '')}</strong>
+                    <strong>
+                      {taxRegime === 'simplified' && result.taxes_simplified
+                        ? result.taxes_simplified.vat.replace('%', '')
+                        : result.taxes.vat.replace('%', '')}
+                    </strong>
                   </div>
                   <div className={styles.taxItem}>
                     <small>Налог на прибыль</small>
-                    <strong>{result.taxes.profit_tax.replace('%', '')}</strong>
+                    <strong>
+                      {taxRegime === 'simplified' && result.taxes_simplified
+                        ? result.taxes_simplified.profit_tax.replace('%', '')
+                        : result.taxes.profit_tax.replace('%', '')}
+                    </strong>
                   </div>
                   <div className={styles.taxItem}>
                     <small>Налог на ФОТ</small>
-                    <strong>{result.taxes.payroll_tax.replace('%', '')}</strong>
+                    <strong>
+                      {taxRegime === 'simplified' && result.taxes_simplified
+                        ? result.taxes_simplified.payroll_tax.replace('%', '')
+                        : result.taxes.payroll_tax.replace('%', '')}
+                    </strong>
                   </div>
                   <div className={styles.taxItem}>
                     <small>Прочие налоги</small>
-                    <strong>{result.taxes.other_taxes}</strong>
+                    <strong>
+                      {taxRegime === 'simplified' && result.taxes_simplified
+                        ? result.taxes_simplified.other_taxes
+                        : result.taxes.other_taxes}
+                    </strong>
                   </div>
                 </div>
                 {result.tax_authority_url && (
@@ -467,24 +672,24 @@ export default function OpenAbroadPage() {
 
               {/* Rent */}
               <div className={styles.section}>
-                <h3>Средняя аренда (за 1 м² в месяц, {result.currency})</h3>
+                <h3>Средняя аренда (за 1 м² в месяц, {getCurrencySymbol()})</h3>
                 <div className={styles.rentGrid}>
                   <div className={styles.rentItem}>
                     <h4>Офис</h4>
                     <p className={styles.rentValue}>
-                      {result.average_rent_office_per_sqm}
+                      {convertCurrency(result.average_rent_office_per_sqm, result.currency)}
                     </p>
                   </div>
                   <div className={styles.rentItem}>
                     <h4>Торговая площадь</h4>
                     <p className={styles.rentValue}>
-                      {result.average_rent_retail_per_sqm}
+                      {convertCurrency(result.average_rent_retail_per_sqm, result.currency)}
                     </p>
                   </div>
                   <div className={styles.rentItem}>
                     <h4>Склад</h4>
                     <p className={styles.rentValue}>
-                      {result.average_rent_warehouse_per_sqm}
+                      {convertCurrency(result.average_rent_warehouse_per_sqm, result.currency)}
                     </p>
                   </div>
                 </div>
@@ -511,10 +716,30 @@ export default function OpenAbroadPage() {
                   <div className={styles.financialItem}>
                     <small>Ставка по депозитам</small>
                     <strong>{result.deposit_rate ? result.deposit_rate.replace('%', '').trim() : 'Нет данных'}</strong>
+                    {result.major_bank_url && (
+                      <a
+                        href={result.major_bank_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.financialLink}
+                      >
+                        {result.major_bank_name} →
+                      </a>
+                    )}
                   </div>
                   <div className={styles.financialItem}>
                     <small>Учетная ставка центробанка</small>
                     <strong>{result.central_bank_rate ? result.central_bank_rate.replace('%', '').trim() : 'Нет данных'}</strong>
+                    {result.central_bank_url && (
+                      <a
+                        href={result.central_bank_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.financialLink}
+                      >
+                        Сайт Центробанка →
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
