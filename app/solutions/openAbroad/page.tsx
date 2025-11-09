@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
 import styles from "./openAbroad.module.css";
 import Header from "../../../components/Header";
 
@@ -159,28 +159,52 @@ export default function OpenAbroadPage() {
   const [taxRegime, setTaxRegime] = useState<'general' | 'simplified'>('general');
   const [citizenship, setCitizenship] = useState<'citizen' | 'foreigner'>('citizen');
   const [monthlyRevenue, setMonthlyRevenue] = useState<string>('');
+  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({
+    'USD': 1,
+    'RUB': 95,
+    'EUR': 0.92,
+    'BYN': 3.2,
+    'BHD': 0.376,
+    'AED': 3.67,
+    'CNY': 7.2,
+    'GBP': 0.79,
+    'JPY': 150,
+    'KZT': 450,
+    'TRY': 34,
+  });
 
   // API URL from environment variables
   // Development: uses http://localhost:8001 (local backend without prefix)
   // Production: uses Heroku URL with /openabroad prefix
   const API_URL = process.env.NEXT_PUBLIC_OPENABROAD_API_URL || "http://localhost:8001";
   const API_PREFIX = process.env.NEXT_PUBLIC_OPENABROAD_API_URL ? "/openabroad" : "";
+  const EXCHANGE_API_KEY = process.env.NEXT_PUBLIC_EXCHANGERATE_API_KEY;
 
-  // Примерные курсы валют к USD (сколько единиц валюты = 1 USD)
-  const exchangeRates: { [key: string]: number } = {
-    'USD': 1,
-    'RUB': 95,      // 1 USD = 95 RUB
-    'EUR': 0.92,    // 1 USD = 0.92 EUR
-    'BYN': 3.2,     // 1 USD = 3.2 BYN
-    'BHD': 0.376,   // 1 USD = 0.376 BHD
-    'AED': 3.67,    // 1 USD = 3.67 AED (Дирхам ОАЭ)
-    'CNY': 7.2,     // 1 USD = 7.2 CNY (Юань)
-    'GBP': 0.79,    // 1 USD = 0.79 GBP (Фунт)
-    'JPY': 150,     // 1 USD = 150 JPY (Иена)
-    'KZT': 450,     // 1 USD = 450 KZT (Тенге)
-    'TRY': 34,      // 1 USD = 34 TRY (Лира)
-    // Добавьте другие валюты по необходимости
-  };
+  // Загрузка актуальных курсов валют при монтировании компонента
+  useEffect(() => {
+    const fetchExchangeRates = async () => {
+      if (!EXCHANGE_API_KEY) {
+        console.warn('ExchangeRate API key not found, using default rates');
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://v6.exchangerate-api.com/v6/${EXCHANGE_API_KEY}/latest/USD`);
+        const data = await response.json();
+
+        if (data.result === 'success') {
+          setExchangeRates(data.conversion_rates);
+          console.log('✅ Exchange rates loaded successfully');
+        } else {
+          console.error('❌ Failed to load exchange rates:', data['error-type']);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching exchange rates:', error);
+      }
+    };
+
+    fetchExchangeRates();
+  }, [EXCHANGE_API_KEY]);
 
   // Функция конвертации строки с числом в выбранную валюту
   const convertCurrency = (value: string, fromCurrency: string): string => {
