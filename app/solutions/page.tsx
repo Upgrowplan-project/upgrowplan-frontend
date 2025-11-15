@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { Card } from "react-bootstrap";
 import Link from "next/link";
-import { FiCpu, FiBarChart2, FiUsers, FiFileText, FiMapPin } from "react-icons/fi";
+import {
+  FiCpu,
+  FiBarChart2,
+  FiUsers,
+  FiFileText,
+  FiMapPin,
+} from "react-icons/fi";
 import { useClickAnalytics } from "../../hooks/useClickAnalytics";
 import { FaHourglassHalf } from "react-icons/fa";
 import Header from "../../components/Header";
@@ -15,35 +21,35 @@ export default function SolutionsPage() {
     {
       title: "FinPilot Free",
       description:
-        "Готовые финансовые моделеи. Открывай, меняй параметры, смотри прогнозы — всё бесплатно.",
+        "Готовые финансовые модели. Анализ доходов и расходов компании. Приибыль, рентабельность, точка безубыточности. Страна - Россия. Доступен бесплатно",
       icon: <FiBarChart2 className="me-2 text-success" />,
       link: "/fin-model/model1/",
     },
     {
       title: "MarketSense AI Agent",
       description:
-        "AI-агент, который ищет и анализирует инфу по твоему запросу. Данные, тренды, инсайты — в одном месте.",
+        "ИИ-агент поиска, анализа и выполнения полноценного маркетингового исследования. Верификация ресурсов и данных, адаптация под ваши ежедневные задачи.",
       icon: <FiCpu className="me-2 text-primary" />,
       release: "осень 2025",
     },
     {
       title: "Сompetitors Research AI Agent",
       description:
-        "Версия Research Agent, но с фокусом на разборе твоих конкурентов. Локальный и точный анализ ниши.",
+        "ИИ-агент исследования ваших конкурентов. Фокус на локальном и точном анализе ниши и конкурентов.",
       icon: <FiUsers className="me-2 text-warning" />,
       release: "осень 2025",
     },
     {
       title: "PlanMaster AI",
       description:
-        "Мгновенно генерирует бизнес-планы на основе шаблонов и твоих данных. Готово к презентации инвесторам.",
+        "Генерация экспертного бизнес-плана на основе современной методологии, живого поиска и верифицированных данных. Нулевая толерантность к ИИ-галлюцинациям. Удобный чат запроса. Документ готов к презентации инвесторам.",
       icon: <FiFileText className="me-2 text-danger" />,
       release: "осень 2025",
     },
     {
-      title: "Relocation Service",
+      title: "Relocation Service Free",
       description:
-        "Сервис предоставляет условия открытия/релокации бизнеса в любой стране",
+        "Сервис предоставляет условия открытия или релокации бизнеса в любую страну. Доступен бесплатно",
       icon: <FiMapPin className="me-2 text-info" />,
       link: "/solutions/openAbroad",
       elementId: "relocation-service-card",
@@ -57,7 +63,7 @@ export default function SolutionsPage() {
 
       <main className="container py-5">
         <h1 className="mb-4" style={{ color: "#1e6078" }}>
-          Автоматические финтех инструменты
+          Автоматические финансовые, маркетинговые и аналитические инструменты
         </h1>
         <p style={{ color: "#0785f6", fontSize: "1.1rem" }}>
           Решения для тех, кто ценит свое время и готов использовать новые

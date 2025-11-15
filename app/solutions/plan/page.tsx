@@ -10,6 +10,8 @@ import {
   Form,
   Badge,
   Spinner,
+  ProgressBar,
+  Alert,
 } from "react-bootstrap";
 import {
   FiUpload,
@@ -19,11 +21,19 @@ import {
   FiDownload,
   FiMessageCircle,
   FiEdit2,
+  FiFileText,
 } from "react-icons/fi";
 import Header from "../../../components/Header";
 import Grade from "../../../components/Grade";
 import Tips from "../../../components/Tips";
 import styles from "./plan.module.css";
+import {
+  triggerGeneration,
+  pollGenerationStatus,
+  downloadDocument,
+  GenerationStatus,
+  GenerationResult,
+} from "../../../lib/documentGenerationApi";
 
 interface ChatMessage {
   type: "user" | "system" | "question" | "greeting";
@@ -49,9 +59,6 @@ const ALLOWED_FILE_TYPES = [
 const MAX_FILES = 5;
 
 export default function PlanPage() {
-  const [, updateState] = useState({});
-  const forceUpdate = useCallback(() => updateState({}), []);
-
   const [chatStarted, setChatStarted] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [userInput, setUserInput] = useState("");
@@ -62,6 +69,12 @@ export default function PlanPage() {
   const [language, setLanguage] = useState("ru");
   const [sessionId, setSessionId] = useState("");
   const [currentHint, setCurrentHint] = useState<string>("");
+
+  // Document Generation states
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStatus, setGenerationStatus] = useState<GenerationStatus | null>(null);
+  const [generationResult, setGenerationResult] = useState<GenerationResult | null>(null);
+  const [generationError, setGenerationError] = useState<string | null>(null);
 
   // Множественный выбор
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
@@ -77,6 +90,7 @@ export default function PlanPage() {
   const lastQuestionId = useRef<string | null>(null);
   const chatBodyRef = useRef<HTMLDivElement | null>(null);
   const answersRef = useRef<Record<string, any>>({});
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (chatBodyRef.current) {
@@ -85,10 +99,14 @@ export default function PlanPage() {
         behavior: "smooth",
       });
     }
-  }, [chatMessages]);
+    // Auto-focus input field after bot message
+    if (!surveyComplete && !isTyping && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [chatMessages, isTyping, surveyComplete]);
 
   const initWebSocket = () => {
-    ws.current = new WebSocket("ws://localhost:8000/ws/survey");
+    ws.current = new WebSocket("ws://localhost:8888/ws/survey");
 
     ws.current.onopen = () => {
       console.log("✅ WebSocket подключён");
@@ -214,7 +232,7 @@ export default function PlanPage() {
     const filesArray = Array.from(e.target.files);
 
     if (filesArray.length + selectedFiles.length > MAX_FILES) {
-      alert(`Можно загрузить максимум ${MAX_FILES} файлов`);
+      // alert(`Можно загрузить максимум ${MAX_FILES} файлов`);
       return;
     }
 
@@ -225,11 +243,8 @@ export default function PlanPage() {
         )
     );
     if (invalidFiles.length > 0) {
-      alert(
-        `Недопустимый формат файла: ${invalidFiles
-          .map((f) => f.name)
-          .join(", ")}`
-      );
+      // alert(`Недопустимый формат файла: ${invalidFiles.map((f) => f.name).join(", ")}`);
+      console.warn(`Недопустимый формат файла: ${invalidFiles.map((f) => f.name).join(", ")}`);
       return;
     }
 
@@ -288,17 +303,8 @@ export default function PlanPage() {
   const handleSend = () => {
     if (!userInput.trim() && selectedFiles.length === 0) return;
 
-    if (
-      userInput.trim().endsWith("?") ||
-      userInput.toLowerCase().includes("как") ||
-      userInput.toLowerCase().includes("что") ||
-      userInput.toLowerCase().includes("почему") ||
-      userInput.toLowerCase().includes("зачем")
-    ) {
-      handleUserQuestion(userInput);
-    } else {
-      sendAnswer(userInput);
-    }
+    // Always send through WebSocket
+    sendAnswer(userInput);
   };
 
   const handleUserQuestion = async (question: string) => {
@@ -409,11 +415,236 @@ export default function PlanPage() {
       link.click();
       URL.revokeObjectURL(url);
 
-      alert("✅ Данные успешно скачаны!");
+      // alert("✅ Данные успешно скачаны!");
     } catch (error) {
       console.error("Ошибка экспорта:", error);
-      alert("❌ Ошибка экспорта данных");
+      // alert("❌ Ошибка экспорта данных");
     }
+  };
+
+  const startDocumentGeneration = async () => {
+    try {
+      setIsGenerating(true);
+      setGenerationError(null);
+      setGenerationStatus(null);
+      setGenerationResult(null);
+
+      // Собираем все данные из ответов чата
+      const answers = answersRef.current;
+
+      console.log("📋 Все собранные ответы:", answers);
+      console.log("📋 Ключи вопросов:", Object.keys(answers));
+
+      // Создаем плоский объект со всеми ответами
+      const allAnswersFlat: Record<string, any> = {};
+      Object.entries(answers).forEach(([questionId, data]: [string, any]) => {
+        allAnswersFlat[questionId] = data.answer;
+      });
+
+      // Вспомогательная функция для нормализации массивов
+      const normalizeArray = (value: any): string[] | undefined => {
+        if (!value) return undefined;
+        if (Array.isArray(value)) {
+          return value.flat().filter(v => v && typeof v === 'string');
+        }
+        if (typeof value === 'string') {
+          return [value];
+        }
+        return undefined;
+      };
+
+      // Начинаем с базовых обязательных полей
+      const requestData: any = {
+        goal_of_plan: "для банка (кредит)",
+        location_country: "Россия",
+        session_id: sessionId
+      };
+
+      // Добавляем ВСЕ поля из собранных ответов
+      Object.entries(allAnswersFlat).forEach(([key, value]) => {
+        if (!value || value === "Нет данных" || value === "") return;
+
+        // Специальная обработка для конкретных полей
+        if (key === 'sales_channels' || key === 'investment_purpose' || key === 'target_audience_type') {
+          requestData[key] = normalizeArray(value);
+        } else if (key === 'team' || key === 'team_size') {
+          requestData.team_size = value ? parseInt(String(value)) : undefined;
+        } else if (key === 'location' || key === 'customer_location' || key === 'city') {
+          if (!requestData.location_city) {
+            requestData.location_city = value;
+          }
+        } else if (key === 'business_stage') {
+          // Маппим значения business_stage к значениям enum
+          const businessStageMap: Record<string, string> = {
+            'идея': 'идея (еще не запущен)',
+            'идея (еще не запущен)': 'идея (еще не запущен)',
+            'запуск': 'новый проект',
+            'запуск (0-6 месяцев)': 'новый проект',
+            'новый проект': 'новый проект',
+            'стартап': 'стартап (до 2 лет)',
+            'стартап (до 2 лет)': 'стартап (до 2 лет)',
+            'действующий': 'действующий бизнес (2+ года)',
+            'действующий бизнес': 'действующий бизнес (2+ года)',
+            'действующий бизнес (2+ года)': 'действующий бизнес (2+ года)',
+            'растущий': 'растущий бизнес',
+            'растущий бизнес': 'растущий бизнес',
+            'зрелый': 'зрелый бизнес',
+            'зрелый бизнес': 'зрелый бизнес'
+          };
+          const normalizedValue = String(value).toLowerCase().trim();
+          requestData.business_stage = businessStageMap[normalizedValue] || 'новый проект';
+        } else if (key === 'legal_form') {
+          // Маппим значения legal_form
+          const legalFormMap: Record<string, string> = {
+            'Пока не зарегистрирован': 'Еще не решили',
+            'Не решили': 'Еще не решили',
+            'Еще не определились': 'Еще не решили'
+          };
+          requestData.legal_form = legalFormMap[String(value)] || value;
+        } else if (key === 'goal_of_plan') {
+          // Приводим к нижнему регистру для соответствия enum
+          requestData.goal_of_plan = String(value).toLowerCase();
+        } else {
+          // Все остальные поля добавляем напрямую
+          requestData[key] = value;
+        }
+      });
+
+      // Обязательные поля - если не заполнены, используем минимальные значения
+      if (!requestData.full_name) {
+        requestData.full_name = allAnswersFlat["company_name"] || allAnswersFlat["business_name"] || allAnswersFlat["user_name"] || "Компания";
+      }
+      if (!requestData.industry) {
+        requestData.industry = allAnswersFlat["industry"] || "Бизнес";
+      }
+      if (!requestData.product_or_service) {
+        // Ищем описание продукта в разных полях
+        requestData.product_or_service =
+          allAnswersFlat["business_description"] ||
+          allAnswersFlat["product"] ||
+          allAnswersFlat["audience_pain_points"] ||
+          "Продукт или услуга компании";
+      }
+
+      // Удаляем undefined значения
+      Object.keys(requestData).forEach(key => {
+        if (requestData[key] === undefined) {
+          delete requestData[key];
+        }
+      });
+
+      console.log("🚀 Запуск генерации бизнес-плана...");
+      console.log("   Execution ID:", sessionId);
+      console.log("   Request data:", requestData);
+
+      // СНАЧАЛА запускаем генерацию через POST /api/generate
+      const result = await triggerGeneration(requestData);
+
+      console.log("✅ Генерация запущена:", result);
+      console.log("   Backend execution ID:", result.execution_id);
+
+      // ПОТОМ запускаем polling статуса используя execution_id из ответа бэкенда
+      const finalStatus = await pollGenerationStatus(
+        result.execution_id, // Используем ID от бэкенда, не sessionId!
+        (status) => {
+          console.log(`[${status.progress_percent}%] ${status.current_step}`);
+          setGenerationStatus(status);
+        }
+      );
+
+      if (finalStatus.status === "completed") {
+        setGenerationResult(result);
+        console.log("✅ Генерация завершена!", result);
+      } else if (finalStatus.status === "failed") {
+        throw new Error(finalStatus.error || "Генерация не удалась");
+      }
+    } catch (error: any) {
+      console.error("❌ Ошибка генерации:", error);
+      setGenerationError(error.message || "Неизвестная ошибка");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleDownloadDocument = async (format: "markdown" | "docx") => {
+    if (!generationResult) return;
+
+    try {
+      if (format === "docx") {
+        // Download DOCX file from backend
+        const response = await fetch(
+          `http://localhost:8000/api/download/${generationResult.execution_id}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Get the blob
+        const blob = await response.blob();
+
+        // Create download link
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `business_plan_${generationResult.execution_id}.docx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        console.log("✅ DOCX файл скачан");
+      } else {
+        // Markdown format - download JSON temporarily
+        const dataStr = JSON.stringify(generationResult, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `business_plan_${sessionId}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        console.log("✅ JSON файл скачан (Markdown в разработке)");
+      }
+    } catch (error) {
+      console.error("❌ Ошибка скачивания:", error);
+      // alert(`❌ Ошибка скачивания ${format.toUpperCase()}`);
+    }
+  };
+
+  // [TEST MODE] Load test data from JSON file
+  const loadTestData = () => {
+    // Create file input element
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+
+    input.onchange = async (e: any) => {
+      const file = e.target?.files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const jsonData = JSON.parse(text);
+
+        // Load data into answersRef
+        answersRef.current = jsonData;
+        setProgressPercent(100);
+        setSurveyComplete(true);
+
+        console.log("✅ Тестовые данные загружены из файла:", file.name);
+        // alert(`✅ Тестовые данные загружены из ${file.name}! Теперь можно запустить генерацию.`);
+      } catch (error) {
+        console.error("❌ Ошибка загрузки JSON:", error);
+        // alert("❌ Ошибка загрузки файла. Проверьте формат JSON.");
+      }
+    };
+
+    // Trigger file dialog
+    input.click();
   };
 
   // СТАРТОВЫЙ ЭКРАН
@@ -751,75 +982,308 @@ export default function PlanPage() {
 
               <Card.Footer className="bg-white">
                 {!surveyComplete ? (
-                  <Form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleSend();
-                    }}
-                  >
-                    {selectedFiles.length > 0 && (
-                      <div className="d-flex flex-wrap gap-2 mb-2">
-                        {selectedFiles.map((file, i) => (
-                          <Badge key={i} bg="secondary" className="p-2">
-                            📎 {file.name}
-                            <FiX
-                              className="ms-2"
-                              style={{ cursor: "pointer" }}
-                              onClick={() => removeFile(i)}
-                            />
-                          </Badge>
-                        ))}
+                  <>
+                    <Form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSend();
+                      }}
+                    >
+                      {selectedFiles.length > 0 && (
+                        <div className="d-flex flex-wrap gap-2 mb-2">
+                          {selectedFiles.map((file, i) => (
+                            <Badge key={i} bg="secondary" className="p-2">
+                              📎 {file.name}
+                              <FiX
+                                className="ms-2"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => removeFile(i)}
+                              />
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="d-flex gap-2">
+                        <Form.Control
+                          ref={inputRef}
+                          type="text"
+                          placeholder="Введите ответ или задайте вопрос..."
+                          value={userInput}
+                          onChange={(e) => setUserInput(e.target.value)}
+                          disabled={isTyping}
+                        />
+
+                        <Form.Label
+                          className="btn btn-outline-secondary mb-0"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <FiUpload />
+                          <Form.Control
+                            type="file"
+                            multiple
+                            onChange={handleFileSelect}
+                            style={{ display: "none" }}
+                          />
+                        </Form.Label>
+
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          disabled={
+                            isTyping ||
+                            (!userInput.trim() && selectedFiles.length === 0)
+                          }
+                        >
+                          <FiSend />
+                        </Button>
                       </div>
+                    </Form>
+
+                    {/* [TEST MODE] Quick test buttons - available from the start */}
+                    <div className="border-top pt-3 mt-3">
+                      <p className="text-muted small text-center mb-2">
+                        <strong>Режим тестирования:</strong>
+                      </p>
+                      <div className="d-flex gap-2 justify-content-center">
+                        <Button
+                          variant="outline-warning" style={{borderColor: "#fc0fc0", color: "#fc0fc0"}}
+                          size="sm"
+                          onClick={loadTestData}
+                        >
+                          Загрузить тестовые данные
+                        </Button>
+                        <Button
+                          variant="outline-success"
+                          size="sm"
+                          onClick={startDocumentGeneration}
+                          disabled={Object.keys(answersRef.current).length === 0}
+                        >
+                          Начать генерацию
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="py-3">
+                    {/* Always show download button after survey completion */}
+                    <div className="text-center mb-3">
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={exportData}
+                        className="mb-3"
+                      >
+                        <FiDownload className="me-2" /> Скачать данные (JSON)
+                      </Button>
+                    </div>
+
+                    {!isGenerating && !generationResult && !generationError && (
+                      <>
+                        <div className="text-center mb-3">
+                          <FiCheckCircle size={32} className="text-success mb-3" />
+                          <p className="mb-3">
+                            <strong>Сбор данных завершен!</strong>
+                          </p>
+                          <div className="d-flex gap-2 justify-content-center">
+                            <Button variant="success" onClick={startDocumentGeneration}>
+                              Начать генерацию бизнес-плана 🚀
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* [TEST MODE] Quick test buttons - always visible for testing */}
+                        <div className="border-top pt-3 mt-3">
+                          <p className="text-muted small text-center mb-2">
+                            <strong>Режим тестирования:</strong>
+                          </p>
+                          <div className="d-flex gap-2 justify-content-center">
+                            <Button
+                              variant="outline-warning" style={{borderColor: "#fc0fc0", color: "#fc0fc0"}}
+                              size="sm"
+                              onClick={loadTestData}
+                            >
+                              Загрузить тестовые данные
+                            </Button>
+                            <Button
+                              variant="outline-success"
+                              size="sm"
+                              onClick={startDocumentGeneration}
+                            >
+                              Начать генерацию
+                            </Button>
+                          </div>
+                        </div>
+                      </>
                     )}
 
-                    <div className="d-flex gap-2">
-                      <Form.Control
-                        type="text"
-                        placeholder="Введите ответ или задайте вопрос..."
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        disabled={isTyping}
-                      />
+                    {isGenerating && generationStatus && (
+                      <>
+                        <div className="mb-3">
+                          <div className="d-flex justify-content-between align-items-center mb-2">
+                            <strong>Генерация бизнес-плана...</strong>
+                            <Badge bg="info">{generationStatus.progress_percent || 0}%</Badge>
+                          </div>
+                          <ProgressBar
+                            now={generationStatus.progress_percent || 0}
+                            animated
+                            striped
+                            variant="success"
+                          />
+                          <p className="text-muted small mt-2 mb-0">
+                            {generationStatus.current_step || "Инициализация..."}
+                          </p>
+                          <div className="mt-2">
+                            <Button
+                              size="sm"
+                              variant="outline-secondary"
+                              onClick={() => {
+                                setIsGenerating(false);
+                                setGenerationStatus(null);
+                                setGenerationError("Генерация прервана пользователем");
+                              }}
+                            >
+                              Прервать и попробовать снова
+                            </Button>
+                          </div>
+                        </div>
 
-                      <Form.Label
-                        className="btn btn-outline-secondary mb-0"
-                        style={{ cursor: "pointer" }}
-                      >
-                        <FiUpload />
-                        <Form.Control
-                          type="file"
-                          multiple
-                          onChange={handleFileSelect}
-                          style={{ display: "none" }}
-                        />
-                      </Form.Label>
+                        {/* [TEST MODE] Quick test buttons - always visible for testing */}
+                        <div className="border-top pt-3 mt-3">
+                          <p className="text-muted small text-center mb-2">
+                            <strong>Режим тестирования:</strong>
+                          </p>
+                          <div className="d-flex gap-2 justify-content-center">
+                            <Button
+                              variant="outline-warning" style={{borderColor: "#fc0fc0", color: "#fc0fc0"}}
+                              size="sm"
+                              onClick={loadTestData}
+                            >
+                              Загрузить тестовые данные
+                            </Button>
+                            <Button
+                              variant="outline-success"
+                              size="sm"
+                              onClick={startDocumentGeneration}
+                            >
+                              Начать генерацию
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
-                      <Button
-                        variant="primary"
-                        type="submit"
-                        disabled={
-                          isTyping ||
-                          (!userInput.trim() && selectedFiles.length === 0)
-                        }
-                      >
-                        <FiSend />
-                      </Button>
-                    </div>
-                  </Form>
-                ) : (
-                  <div className="text-center py-3">
-                    <FiCheckCircle size={32} className="text-success mb-3" />
-                    <p className="mb-3">
-                      <strong>Сбор данных завершен!</strong>
-                    </p>
-                    <div className="d-flex gap-2 justify-content-center">
-                      <Button variant="outline-primary" onClick={exportData}>
-                        <FiDownload className="me-2" /> Скачать результаты
-                      </Button>
-                      <Button variant="success">
-                        Начать генерацию бизнес-плана 🚀
-                      </Button>
-                    </div>
+                    {generationError && (
+                      <>
+                        <Alert variant="danger" className="mb-3">
+                          <strong>Ошибка генерации:</strong> {generationError}
+                          <div className="mt-2">
+                            <Button
+                              size="sm"
+                              variant="outline-danger"
+                              onClick={startDocumentGeneration}
+                            >
+                              Попробовать снова
+                            </Button>
+                          </div>
+                        </Alert>
+
+                        {/* [TEST MODE] Quick test buttons - always visible for testing */}
+                        <div className="border-top pt-3 mt-3">
+                          <p className="text-muted small text-center mb-2">
+                            <strong>Режим тестирования:</strong>
+                          </p>
+                          <div className="d-flex gap-2 justify-content-center">
+                            <Button
+                              variant="outline-warning" style={{borderColor: "#fc0fc0", color: "#fc0fc0"}}
+                              size="sm"
+                              onClick={loadTestData}
+                            >
+                              Загрузить тестовые данные
+                            </Button>
+                            <Button
+                              variant="outline-success"
+                              size="sm"
+                              onClick={startDocumentGeneration}
+                            >
+                              Начать генерацию
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {generationResult && (
+                      <>
+                        <div className="text-center">
+                          <FiCheckCircle size={48} className="text-success mb-3" />
+                          <h5 className="mb-3">Бизнес-план готов! 🎉</h5>
+                          {generationResult.metadata && (
+                            <div className="mb-3">
+                              <Badge bg="success" className="me-2">
+                                {generationResult.metadata.sections_count} разделов
+                              </Badge>
+                              <Badge bg="info" className="me-2">
+                                {generationResult.metadata.verified_facts_used} verified фактов
+                              </Badge>
+                              <Badge bg="secondary">
+                                {generationResult.metadata.generation_time_seconds.toFixed(1)}с
+                              </Badge>
+                            </div>
+                          )}
+                          <div className="d-flex gap-2 justify-content-center mb-3">
+                            <Button
+                              variant="primary"
+                              onClick={() => handleDownloadDocument("docx")}
+                            >
+                              <FiFileText className="me-2" /> Скачать DOCX
+                            </Button>
+                            <Button
+                              variant="outline-primary"
+                              onClick={() => handleDownloadDocument("markdown")}
+                            >
+                              <FiDownload className="me-2" /> Скачать Markdown
+                            </Button>
+                          </div>
+                          <div className="text-center">
+                            <Button
+                              variant="outline-secondary"
+                              onClick={() => {
+                                setGenerationResult(null);
+                                setIsGenerating(false);
+                                setGenerationStatus(null);
+                                setGenerationError(null);
+                              }}
+                            >
+                              Начать новую генерацию
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* [TEST MODE] Quick test buttons - always visible for testing */}
+                        <div className="border-top pt-3 mt-3">
+                          <p className="text-muted small text-center mb-2">
+                            <strong>Режим тестирования:</strong>
+                          </p>
+                          <div className="d-flex gap-2 justify-content-center">
+                            <Button
+                              variant="outline-warning" style={{borderColor: "#fc0fc0", color: "#fc0fc0"}}
+                              size="sm"
+                              onClick={loadTestData}
+                            >
+                              Загрузить тестовые данные
+                            </Button>
+                            <Button
+                              variant="outline-success"
+                              size="sm"
+                              onClick={startDocumentGeneration}
+                            >
+                              Начать генерацию
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
 
